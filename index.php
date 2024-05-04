@@ -24,7 +24,22 @@
           <a href="#">
             <div>
               <h5 class=" text-base font-medium text-dark/80">Total Users</h5>
-              <span class="text-dark/75 font-semibold text-2xl">0</span>
+              <?php 
+                $user_query = "SELECT id FROM users";
+                $user_result = mysqli_query($con,$user_query);
+
+                if($user_qte = mysqli_num_rows($user_result)) {
+                  ?>
+                    <span class="text-dark/75 font-semibold text-2xl">
+                      <?=$user_qte?>
+                    </span>
+                  <?php
+                } else {
+                  ?>
+                    <span class="text-dark/75 font-semibold text-2xl">0</span>
+                  <?php
+                }             
+              ?>
             </div>
           </a>
         </div>
@@ -32,7 +47,22 @@
           <a href="#">
             <div>
               <h5 class=" text-base font-medium text-dark/80">Total Blocked Users</h5>
-              <span class="text-dark/75 font-semibold text-2xl">0</span>
+              <?php 
+                $b_user_query = "SELECT id FROM users WHERE status = '1'";
+                $b_user_result = mysqli_query($con,$b_user_query);
+
+                if($b_user_qte = mysqli_num_rows($b_user_result)) {
+                  ?>
+                    <span class="text-dark/75 font-semibold text-2xl">
+                      <?=$b_user_qte?>
+                    </span>
+                  <?php
+                } else {
+                  ?>
+                    <span class="text-dark/75 font-semibold text-2xl">0</span>
+                  <?php
+                }             
+              ?>
             </div>
           </a>
         </div>

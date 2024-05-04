@@ -8,13 +8,13 @@
     unset($_SESSION['auth_role']);
     unset($_SESSION['auth_user']);
 
-    $_SESSION['message'] = 'Logged Out Succesfully';
+    $_SESSION['message-success'] = 'Logged Out Succesfully';
     header('Location: ../login.php');
     exit();
 
   } else {
     // No Permition
-    $_SESSION['message'] = 'No Permission to access';
+    $_SESSION['message-error'] = 'No Permission to access';
     header('Location: ../index.php');
     exit();
   }

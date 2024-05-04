@@ -9,10 +9,10 @@
     $password = mysqli_real_escape_string($con,$_POST['password']);
 
     if(!$email) {
-      $_SESSION['message'] = 'Please enter your email';
+      $_SESSION['message-warning'] = 'Email is required';
 
-    } elseif(strlen($password) < 8) {
-      $_SESSION['message'] = 'Password Should be 8+ characters';
+    } elseif(!$password) {
+      $_SESSION['message-warning'] = 'Password is required';
     
     } else {
       $user_query = "SELECT * FROM users 
@@ -39,36 +39,36 @@
             
           } else {
             // No Permition to access Dashboard
-            $_SESSION['message'] = 'Permission denied. Please visite the school website';
+            $_SESSION['message-error'] = 'Permission denied. Please visite the school website';
           }
           
         } else {
           // Credentials does not match
-          $_SESSION['message'] = 'Invalid Email or Password';
+          $_SESSION['message-error'] = 'Invalid Email or Password';
         }
   
       } else {
         // Credentials does not match
-        $_SESSION['message'] = 'Invalid Email or Password';
+        $_SESSION['message-error'] = 'Invalid Email or Password';
       }
     }
 
 
-    if(isset($_SESSION['message'])) {
+    if(isset($_SESSION['message-warning']) || isset($_SESSION['message-error'])) {
       // Redirect if exist an error message
       $_SESSION['login_email_data'] = $_POST['email'];
       header('Location: ../login.php');
       exit();
     
     } else {
-      $_SESSION['message'] = 'Welcomme to Dashboard';
+      $_SESSION['message-success'] = 'Welcomme to Dashboard';
       header('Location: ../index.php');
       exit();
     }
   
   } else {
     // No Permition
-    $_SESSION['message'] = 'No Permission to access';
+    $_SESSION['message-error'] = 'No Permission to access';
     header('Location: ../index.php');
     exit();
 
