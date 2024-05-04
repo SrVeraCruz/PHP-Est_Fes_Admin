@@ -1,5 +1,6 @@
 <?php 
 
+  include('middleware/authentication.php');
   include('includes/header.php')
 
 ?>

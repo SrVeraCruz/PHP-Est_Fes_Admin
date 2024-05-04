@@ -18,4 +18,4 @@
 
 <div class="flex w-full">
   <?php include('aside.php') ?>
-  <main class="w-full p-4 min-h-[calc(100vh-10.05rem)] flex flex-col justify-between">
+  <main class="w-full p-4 min-h-[calc(100vh-10.05rem)] flex flex-col">

@@ -1,8 +1,11 @@
 <?php 
 
-  include('includes/header.php')
+  include('middleware/authentication.php');
+  include('includes/header.php');
 
 ?>
+
+  <?php include('includes/message.php')?>
 
     <section 
       class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-sm"
@@ -42,13 +45,13 @@
           </a>
         </div>
         <div class="p-4 shadow-md bg-highlight/40 rounded-md min-h-28 hover:bg-highlight/75 hover:shadow-lg transition duration-200 ease-in-out hover:scale-105 ">
-          <a href="#">
-            <div>
-              <h5 class=" text-base font-medium text-dark/80">Total SubCategories</h5>
-              <span class="text-dark/75 font-semibold text-2xl">0</span>
-            </div>
-          </a>
-        </div>
+        <a href="#">
+          <div>
+            <h5 class=" text-base font-medium text-dark/80">Total SubCategories</h5>
+            <span class="text-dark/75 font-semibold text-2xl">0</span>
+          </div>
+        </a>
+      </div>
     </section>
     
   <?php 
