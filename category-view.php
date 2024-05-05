@@ -8,6 +8,7 @@
     $editing = true;
   }
   
+  $category_id = $_SESSION['category-data']['id'] ?? null;
   $category_name = $_SESSION['category-data']['name'] ?? null;
   $parent_category_id = $_SESSION['category-data']['parent_category_id'] ?? null;
 
@@ -17,7 +18,7 @@
   <?php include('includes/message.php')?>
 
   <section 
-    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-sm"
+    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-sm "
   >
     <div>
       <h1 class=" text-[2rem] text-dark/75  font-semibold">Categories</h1>
@@ -48,7 +49,7 @@
                 if(mysqli_num_rows($category_result) > 0) {
                   ?>
                     <?php foreach($category_result as $category): ?>
-                      <option value="<?=$category['id']?>" <?=$parent_category_id === $category['id'] && $editing ? 'selected' : ''?> ><?=$category['name']?></option>
+                      <option value="<?=$category['id']?>" <?=$parent_category_id === $category['id'] && $editing ? 'selected' : ''?> class="<?=$category_id === $category['id'] ? 'hidden' : ''?>" ><?=$category['name']?></option>
                     <?php endforeach ?>
                   <?php
                 }
@@ -61,7 +62,12 @@
           <?php 
             if($editing) {
               ?>
-                <button type="button" class="btn-default">Cancel</button>
+                <button type="button" 
+                  onclick="handleCancelEdit()" 
+                  class="btn-default"
+                >
+                  Cancel
+                </button>
                 <button 
                   type="submit" 
                   name="edit_category_btn" 
@@ -69,6 +75,7 @@
                 >
                   Update
                 </button>
+                <input type="hidden" value="<?=$category_id?>" name="category_id">
                 
               <?php
             } else {
@@ -87,7 +94,7 @@
       </form>
     </div>
 
-    <div>
+    <div id="table-wrapper">
       <table id="basic">
         <thead>
           <tr>
@@ -139,6 +146,13 @@
     </div>
 
   </section>
+
+  <script>
+    const handleCancelEdit = () => {
+      location.reload();
+    }
+
+  </script>
   
 <?php 
 include('includes/footer.php')

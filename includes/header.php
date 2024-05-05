@@ -6,6 +6,7 @@
   <title>Est-fes - Admin</title>
 
   <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="./assets/js/script.js" defer ></script>
 
 </head>
 <body class="bg-bgGray w-full">

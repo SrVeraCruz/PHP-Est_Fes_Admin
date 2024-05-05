@@ -17,7 +17,7 @@ input, textarea, select {
 }
 
 .btn-default {
-  @apply bg-white text-sm text-gray-800 py-1.5 px-4 rounded-sm border border-gray-200 shadow-sm
+  @apply bg-white text-sm text-gray-800 py-1 px-4 rounded-sm border border-gray-200 shadow-sm
 }
 
 .btn-primary {
@@ -30,25 +30,57 @@ input, textarea, select {
   @apply bg-red-200 text-red-600;
 }
 
-table#basic {
-  @apply w-full h-full;
+#table-wrapper {
+  @apply overflow-auto w-full;
 
-  tr {
-    @apply border-b border-gray-300
-  }
+  table#basic {
+    @apply w-full h-full;
+    
+    tr {
+      @apply border-b border-gray-300;
+      
+      th {
+       @apply uppercase;
+     }
 
-  tr th {
-    @apply uppercase
-  }
+     th, td {
+       @apply text-sm text-dark/75 px-4 py-2 text-start
+     }
 
-  tr th, td {
-    @apply text-sm text-dark/75 px-4 py-2 text-start
-  }
+     td {
+        a {
+        @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1;
 
-  td a {
-    @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
+        }
+        
+        button {
+        @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
+        }
+      }
+    }
   }
-  td button {
-    @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
+}
+  
+  #navbar-hamburguer.open {
+    transform: translateX(0.35rem);
+    transition: .1s ease-in-out;
+    :nth-child(1) {
+      transform: translateY(0.7rem);
+      rotate: 45deg;
+    transition: .1s ease-in-out;
   }
+  :nth-child(2) {
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    transition: .1s ease-in-out;
+  }
+  :nth-child(3) {
+    transform: translateY(-0.7rem);
+    rotate: -45deg;
+    transition: .1s ease-in-out;
+  }
+}
+
+#aside.open {
+  transform: translateX(0);
 }
