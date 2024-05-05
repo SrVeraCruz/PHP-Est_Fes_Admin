@@ -25,12 +25,12 @@
             </ul>
           </div>
         </div>
+        <button id="navbar-hamburguer" class="flex-col gap-1.5 hidden md:flex">
+          <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
+          <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
+          <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
+        </button>
       <?php endif ?>
-      <button id="navbar-hamburguer" class="flex-col gap-1.5 hidden md:flex">
-        <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
-        <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
-        <span class="inline-block w-6 h-0.5 rounded-md bg-dark"></span>
-      </button>
   </div>
     
   </nav>
