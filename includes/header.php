@@ -19,4 +19,4 @@
 
 <div class="flex w-full">
   <?php include('aside.php') ?>
-  <main class="flex-1 p-4 min-h-[calc(100vh-10.05rem)]">
+  <main class="p-4 min-h-[calc(100vh-10.05rem)] w-full min-w-0">

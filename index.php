@@ -67,7 +67,7 @@
         </a>
       </div>
       <div class="p-4 shadow-md bg-highlight/40 rounded-md min-h-28 hover:bg-highlight/75 hover:shadow-lg transition duration-200 ease-in-out hover:scale-105 ">
-        <a href="#">
+        <a href="category-view.php">
           <div>
             <h5 class=" text-base font-medium text-dark/80">Total Categories</h5>
             <?php 
@@ -90,7 +90,7 @@
         </a>
       </div>
       <div class="p-4 shadow-md bg-highlight/40 rounded-md min-h-28 hover:bg-highlight/75 hover:shadow-lg transition duration-200 ease-in-out hover:scale-105 ">
-      <a href="#">
+      <a href="item-view.php">
         <div>
           <h5 class=" text-base font-medium text-dark/80">Total Items</h5>
           <span class="text-dark/75 font-semibold text-2xl">0</span>

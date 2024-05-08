@@ -31,7 +31,7 @@ input, textarea, select {
 }
 
 #table-wrapper {
-  @apply overflow-auto w-full;
+  @apply !overflow-auto !w-full;
 
   table#basic {
     @apply w-full h-full;
