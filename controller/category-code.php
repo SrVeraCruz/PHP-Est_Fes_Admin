@@ -67,6 +67,47 @@
 
     }
     
+  } elseif(isset($_POST['confirm_del_cat_btn'])) {
+    $category_id = mysqli_real_escape_string($con,$_POST['confirm_del_cat_btn']);
+
+    $cat_query = "SELECT id,name FROM categories WHERE id = $category_id LIMIT 1";
+    $cat_result = mysqli_query($con,$cat_query);
+
+    if(mysqli_num_rows($cat_result) > 0) {
+      $cat_data = mysqli_fetch_assoc($cat_result);
+
+      $_SESSION['del-category-data'] = $cat_data;
+      header('Location: ../category-view.php');
+      exit();
+
+    } else {
+      $_SESSION['message-error'] = 'Sommething went wrong';
+      header('Location: ../category-view.php');
+      exit();
+    
+    }
+    
+  } elseif(isset($_POST['delete_cat_btn'])) {
+    $category_id = mysqli_real_escape_string($con,$_POST['delete_cat_btn']);
+
+    $delete_cat_query = "UPDATE categories 
+    SET status = '2' 
+    WHERE id = '$category_id' LIMIT 1";
+
+    $delete_cat_result = mysqli_query($con,$delete_cat_query);
+
+    if($delete_cat_result) {
+      $_SESSION['message-success'] = 'Category deleted successfully';
+      header('Location: ../category-view.php');
+      exit();
+
+    } else {
+      $_SESSION['message-warning'] = 'Sommething went wrong';
+      header('Location: ../category-view.php');
+      exit();
+
+    }
+    
   } else {
     $_SESSION['message-error'] = 'No permission';
     header('Location: ../category-view.php');

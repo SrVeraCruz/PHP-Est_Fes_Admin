@@ -9,7 +9,7 @@
   <script src="./assets/js/script.js" defer ></script>
 
 </head>
-<body class="bg-bgGray w-full">
+<body class="bg-bgGray max-w-[100vw]">
 
 <?php 
 
@@ -19,4 +19,4 @@
 
 <div class="flex w-full">
   <?php include('aside.php') ?>
-  <main class="w-full p-4 min-h-[calc(100vh-10.05rem)] flex flex-col">
+  <main class="flex-1 p-4 min-h-[calc(100vh-10.05rem)]">

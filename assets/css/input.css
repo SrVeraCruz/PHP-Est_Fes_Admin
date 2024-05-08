@@ -41,20 +41,19 @@ input, textarea, select {
       
       th {
        @apply uppercase;
-     }
+      }
 
-     th, td {
-       @apply text-sm text-dark/75 px-4 py-2 text-start
-     }
+      th, td {
+        @apply text-sm text-dark/75 px-4 py-2 text-start
+      }
 
-     td {
+      td {
         a {
-        @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1;
-
+          @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1;
         }
         
         button {
-        @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
+          @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
         }
       }
     }

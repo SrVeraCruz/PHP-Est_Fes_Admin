@@ -3,7 +3,7 @@
 ?>
 
 <?php if(isset($_SESSION['auth'])) : ?>
-  <aside id="aside" class=" top-[4.7rem] bottom-0 p-4 w-auto md:fixed md:w-full md:-translate-x-full bg-bgGray text-dark/75 md:transition">
+  <aside id="aside" class=" top-[4.7rem] bottom-0 p-4 md:fixed md:w-full md:-translate-x-full bg-bgGray text-dark/75 md:transition">
 
     <div>
       <ul class="flex flex-col gap-3">
