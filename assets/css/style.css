@@ -618,18 +618,6 @@ video {
   z-index: 61;
 }
 
-.col-span-1 {
-  grid-column: span 1 / span 1;
-}
-
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-
-.col-span-full {
-  grid-column: 1 / -1;
-}
-
 .m-16 {
   margin: 4rem;
 }
@@ -766,12 +754,12 @@ video {
   width: 100%;
 }
 
-.min-w-full {
-  min-width: 100%;
-}
-
 .min-w-0 {
   min-width: 0px;
+}
+
+.min-w-full {
+  min-width: 100%;
 }
 
 .max-w-\[100vw\] {
@@ -780,10 +768,6 @@ video {
 
 .max-w-\[30rem\] {
   max-width: 30rem;
-}
-
-.flex-1 {
-  flex: 1 1 0%;
 }
 
 .flex-\[0\.6\] {
@@ -806,10 +790,6 @@ video {
 
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .flex-col {
@@ -1329,6 +1309,9 @@ input, textarea, select {
     }
     tr {
       th {
+        text-wrap: nowrap;
+      }
+      th {
         text-transform: uppercase;
       }
       th, td {
@@ -1490,18 +1473,6 @@ input, textarea, select {
     position: sticky;
   }
 
-  .md\:col-span-2 {
-    grid-column: span 2 / span 2;
-  }
-
-  .md\:col-span-4 {
-    grid-column: span 4 / span 4;
-  }
-
-  .md\:col-span-full {
-    grid-column: 1 / -1;
-  }
-
   .md\:flex {
     display: flex;
   }
@@ -1517,10 +1488,6 @@ input, textarea, select {
 
   .md\:grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .md\:transition {

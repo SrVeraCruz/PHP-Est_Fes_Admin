@@ -40,7 +40,7 @@ input, textarea, select {
       @apply border-b border-gray-300;
       
       th {
-       @apply uppercase;
+       @apply uppercase text-nowrap;
       }
 
       th, td {
