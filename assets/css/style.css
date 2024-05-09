@@ -562,12 +562,24 @@ video {
   position: fixed;
 }
 
+.\!fixed {
+  position: fixed !important;
+}
+
 .absolute {
   position: absolute;
 }
 
 .relative {
   position: relative;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.\!sticky {
+  position: sticky !important;
 }
 
 .-bottom-16 {
@@ -668,6 +680,18 @@ video {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.ml-\[13\.8925rem\] {
+  margin-left: 13.8925rem;
+}
+
+.ml-\[12\.8925rem\] {
+  margin-left: 12.8925rem;
+}
+
+.block {
+  display: block;
 }
 
 .inline-block {
@@ -796,8 +820,24 @@ video {
   flex-direction: column;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
 .items-center {
   align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
 }
 
 .justify-center {
@@ -834,6 +874,10 @@ video {
 
 .self-start {
   align-self: flex-start;
+}
+
+.self-end {
+  align-self: flex-end;
 }
 
 .overflow-hidden {
@@ -1473,6 +1517,18 @@ input, textarea, select {
     position: sticky;
   }
 
+  .md\:bottom-0 {
+    bottom: 0px;
+  }
+
+  .md\:ml-\[12\.8925rem\] {
+    margin-left: 12.8925rem;
+  }
+
+  .md\:ml-0 {
+    margin-left: 0px;
+  }
+
   .md\:flex {
     display: flex;
   }
@@ -1541,5 +1597,12 @@ input, textarea, select {
   .sm\:text-xs {
     font-size: 0.75rem;
     line-height: 1rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .xs\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 }

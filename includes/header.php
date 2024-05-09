@@ -19,4 +19,4 @@
 
 <div class="flex w-full">
   <?php include('aside.php') ?>
-  <main class="p-4 min-h-[calc(100vh-10.05rem)] w-full min-w-0">
+  <main class="p-4 <?=isset($_SESSION['auth']) ? 'ml-[12.8925rem]' : 'md:ml-0' ?> min-h-[calc(100vh-10.05rem)] w-full min-w-0">

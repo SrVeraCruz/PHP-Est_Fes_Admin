@@ -199,10 +199,6 @@
     const handleCancel = () => {
       location.reload();
     }
-
-    const handleConfirmDeleteCat = (event) => {
-    }
-
   </script>
   
 <?php 

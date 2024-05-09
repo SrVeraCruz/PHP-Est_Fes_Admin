@@ -71,7 +71,7 @@
           <div>
             <h5 class=" text-base font-medium text-dark/80">Total Categories</h5>
             <?php 
-              $category_query = "SELECT id FROM users";
+              $category_query = "SELECT id FROM categories WHERE status != '2'";
               $category_result = mysqli_query($con,$category_query);
 
               if($category_qte = mysqli_num_rows($category_result)) {

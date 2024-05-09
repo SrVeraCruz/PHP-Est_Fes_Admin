@@ -53,9 +53,9 @@
               if($avatar_info['size'] <= 1000000){
                 $time = time();
                 $avatar_to_upload = $time . $avatar_name;
-                $avatar_detination_path = '../uploads/users/' . $avatar_to_upload;
+                $avatar_destination_path = '../uploads/users/' . $avatar_to_upload;
   
-                if((move_uploaded_file($avatar_info["tmp_name"], $avatar_detination_path)) === false) {
+                if((move_uploaded_file($avatar_info["tmp_name"], $avatar_destination_path)) === false) {
                   $_SESSION['message-warning'] = "Sommething went wrong on uploading Avatar";
                 }
                 
@@ -74,7 +74,7 @@
         }
         
       } else {
-        $_SESSION['message-warning'] = 'Password and Confirm Password does no Match';
+        $_SESSION['message-warning'] = 'Password and Confirm Password does not Match';
       }
       
     }
