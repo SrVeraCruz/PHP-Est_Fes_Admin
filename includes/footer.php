@@ -1,7 +1,7 @@
   </main>
 </div>
 
-<footer class="mt-auto flex justify-between text-sm p-4 py-8 border-t-2">
+<footer class="mt-auto sticky flex justify-between text-sm p-4 py-8 border-t-2">
   <div>
     <p class="text-dark/60">Copyright &COPY; Est Fes <span id="Date-copy">2024</span></p>
   </div>

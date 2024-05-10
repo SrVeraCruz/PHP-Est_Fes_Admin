@@ -45,8 +45,6 @@
     $avatar = $_SESSION['edit_user_data']['avatar'] ?? null;
 
     unset($_SESSION['edit_user_data']);
-  } else {
-  
   }
 
 ?>

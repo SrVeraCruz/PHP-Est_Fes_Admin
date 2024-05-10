@@ -2,7 +2,7 @@
   <nav class="h-[4.7rem] p-4 py-3 flex justify-between bg-highlight items-center">
     <div class="">
       <h2 class="text-primary text-2xl font-semibold">
-        <a href="index.php">Est Fes - Admin</a>
+        <a href="<?=isset($_SESSION['auth']) ? 'index.php' : '#'?>">Est Fes - Admin</a>
       </h2>
     </div>
 

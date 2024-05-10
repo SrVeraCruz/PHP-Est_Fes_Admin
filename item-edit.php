@@ -3,18 +3,52 @@
   include('middleware/authentication.php');
   include('includes/header.php');
 
-  $title = $_SESSION['add_item_data']['title'] ?? null;
-  $category_id = $_SESSION['add_item_data']['category_id'] ?? null;
-  $slug = $_SESSION['add_item_data']['slug'] ?? null;
-  $data_content_title = $_SESSION['add_item_data']['data_content_title'] ?? null;
-  $data_content_desc = $_SESSION['add_item_data']['data_content_desc'] ?? null;
-  $meta_title = $_SESSION['add_item_data']['meta_title'] ?? null;
-  $status = $_SESSION['add_item_data']['status'] ?? null;
+  if(isset($_GET['id'])) {
+    $item_id = $_GET['id'];
 
-  print_r($data_content_title);
-  print_r($data_content_desc);
+  } else {
+    $_SESSION['message-warning'] = 'Item invalid. Please Select the item to edit';
+    echo '<script>window.location.href = "item-view.php";</script>';
+    exit();
+  }
 
-  unset($_SESSION['add_item_data']);
+  $item_query = "SELECT * FROM items WHERE id = '$item_id' LIMIT 1";
+  $item_result = mysqli_query($con,$item_query);
+
+  if(!(mysqli_num_rows($item_result))) {
+    $_SESSION['message-warning'] = 'Item invalid. Please Select the item to edit';
+    echo '<script>window.location.href = "item-view.php";</script>';
+    exit();
+  }
+
+  $item_data = mysqli_fetch_assoc($item_result);
+  
+  $category_id = $item_data['category_id'] ?? null;
+  $title = $item_data['title'] ?? null;
+  $slug = $item_data['slug'] ?? null;
+  $data_content = json_decode($item_data['data_content']) ?? null;
+  $meta_title = $item_data['meta_title'] ?? null;
+  $status = $item_data['status'] ?? null;
+
+  $data_content_title = [];
+  $data_content_desc = [];
+  foreach($data_content as $data) {
+    array_push($data_content_title,$data->title ?? '');
+    array_push($data_content_desc,$data->description ?? '');
+  }
+  
+  if(isset($_SESSION['edit_item_data'])) {
+    $title = $_SESSION['edit_item_data']['title'] ?? null;
+    $category_id = $_SESSION['edit_item_data']['category_id'] ?? null;
+    $slug = $_SESSION['edit_item_data']['slug'] ?? null;
+    $data_content_title = $_SESSION['edit_item_data']['data_content_title'] ?? null;
+    $data_content_desc = $_SESSION['edit_item_data']['data_content_desc'] ?? null;
+    $meta_title = $_SESSION['edit_item_data']['meta_title'] ?? null;
+    $status = ($_SESSION['edit_item_data']['status'] ?? null) === 'on' ? '1' : '0';
+
+    unset($_SESSION['edit_item_data']);
+  }
+
 
 
 ?>
@@ -34,7 +68,7 @@
           <a href="item-view.php">Item</a>
         </li>/
         <li>
-          <a href="#">Add</a>
+          <a href="#">Edit</a>
         </li>
       </ul>
     </div>
@@ -47,6 +81,7 @@
           <div class="flex flex-col">
             <label class="font-bold">Item title:</label>
             <div class="flex sm:flex-col gap-2">
+              <input type="hidden" name="item_id" value="<?=$item_id?>">
               <input type="text" name="title" value="<?=$title?>" placeholder="e.g: Informatique" class=" p-3 outline-none text-[.9rem] rounded-md">
               <select name="category_id">
                 <option value="">No category</option>
@@ -131,7 +166,12 @@
             </div>
           </div>
 
-          <button type="submit" class="bg-primary p-3 rounded-md text-white uppercase mt-3 sm:mt-0 font-semibold hover:bg-primary/90 transition duration-200 ease-in-out sm:text-xs" name="add_item_btn">Add item</button>
+          <div class="flex flex-col items-start -mt-2">
+            <label class="font-bold">Status:</label>
+            <input type="checkbox" name="status" <?=$status === '1' ? 'checked' : ''?> class="w-auto">
+          </div>
+
+          <button type="submit" class="bg-primary p-3 rounded-md text-white uppercase mt-3 sm:mt-0 font-semibold hover:bg-primary/90 transition duration-200 ease-in-out sm:text-xs" name="edit_item_btn">Update item</button>
           
         </div>
 

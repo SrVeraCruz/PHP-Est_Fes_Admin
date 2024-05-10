@@ -25,7 +25,7 @@
           <div>
             <h5 class=" text-base font-medium text-dark/80">Total Users</h5>
             <?php 
-              $user_query = "SELECT id FROM users";
+              $user_query = "SELECT id FROM users WHERE role_as <> '2'";
               $user_result = mysqli_query($con,$user_query);
 
               if($user_qte = mysqli_num_rows($user_result)) {
@@ -93,7 +93,22 @@
       <a href="item-view.php">
         <div>
           <h5 class=" text-base font-medium text-dark/80">Total Items</h5>
-          <span class="text-dark/75 font-semibold text-2xl">0</span>
+          <?php 
+            $item_query = "SELECT id FROM items";
+            $item_result = mysqli_query($con,$item_query);
+
+            if($item_qte = mysqli_num_rows($item_result)) {
+              ?>
+                <span class="text-dark/75 font-semibold text-2xl">
+                  <?=$item_qte?>
+                </span>
+              <?php
+            } else {
+              ?>
+                <span class="text-dark/75 font-semibold text-2xl">0</span>
+              <?php
+            }             
+          ?>
         </div>
       </a>
     </div>

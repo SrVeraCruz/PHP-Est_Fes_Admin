@@ -45,7 +45,7 @@
       exit();
 
     } else {
-      $_SESSION['message-error'] = 'Sommething went wrong';
+      $_SESSION['message-warning'] = 'Sommething went wrong';
       header('Location: ../category-view.php');
       exit();
     
@@ -96,7 +96,7 @@
       exit();
 
     } else {
-      $_SESSION['message-error'] = 'Sommething went wrong';
+      $_SESSION['message-warning'] = 'Sommething went wrong';
       header('Location: ../category-view.php');
       exit();
     
