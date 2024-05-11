@@ -32,7 +32,7 @@
 
   } elseif (isset($_SESSION['message-success'])) {
     ?>
-      <div id="alert-msg" class="z-[51] bg-bgSuccessAlert text-successAlert border-2 border-successAlert p-3 m-2 mb-4 sm:mt-3 flex items-center justify-between text-center rounded-md shadow-sm w-full max-w-[30rem] mx-auto">
+      <div id="alert-msg" class="z-[49] bg-bgSuccessAlert text-successAlert border-2 border-successAlert p-3 m-2 mb-4 sm:mt-3 flex items-center justify-between text-center rounded-md shadow-sm w-full max-w-[30rem] mx-auto">
         <h2 class="flex items-center gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />

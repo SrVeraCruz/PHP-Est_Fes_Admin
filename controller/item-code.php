@@ -105,8 +105,9 @@
 
     }
 
-    if($_SESSION['message-warning']) {
+    if(isset($_SESSION['message-warning'])) {
       // Redirect if have an error message
+      $_SESSION['message-warning'] = 'Sommething went wrong';
       $_SESSION['edit_item_data'] = $_POST;
       header('Location: ../item-edit.php?id='.$item_id);
       exit();
@@ -123,6 +124,7 @@
 
       } else {
         $_SESSION['edit_item_data'] = $_POST;
+        //var_dump($_POST, $item_result, $data_content_json);
         $_SESSION['message-warning'] = 'Sommething went wrong';
         header('Location: ../item-edit.php?id='.$item_id);
         exit();

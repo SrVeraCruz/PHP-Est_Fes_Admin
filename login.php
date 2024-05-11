@@ -11,12 +11,12 @@
 ?>
     
     <section 
-    class=" flex flex-col items-center justify-center w-full h-full"
+    class=" flex flex-col items-center justify-center w-full h-full px-16 sm:px-8"
     >
       <?php include('includes/message.php')?>
-      <div class="bg-white shadow-xl mx-16 sm:m-8 p-2 pb-5 rounded-sm text-softDark flex w-full max-w-[30rem]">
+      <div class="bg-white shadow-xl sm:m-4 p-2 pb-5 rounded-lg text-softDark flex w-full max-w-[30rem]">
         
-        <form action="controller/login-code.php" method="post" class="m-6 mx-8 sm:m-2 sm:mx-4 w-full h-full">
+        <form action="controller/login-code.php" method="post" class="m-4 mx-8 sm:m-2 sm:mx-4 w-full h-full">
           <h1 class="text-center text-[2rem] xs:text-2xl font-semibold border-b-2 pb-2 mb-6">Login</h1>
           <div class="px-7 text-[.9rem] flex flex-col gap-5">
             <div class="flex flex-col">

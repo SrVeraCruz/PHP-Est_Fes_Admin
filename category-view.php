@@ -27,7 +27,7 @@
   <?php include('includes/message.php')?>
 
   <section 
-    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-sm "
+    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md"
   >
     
 

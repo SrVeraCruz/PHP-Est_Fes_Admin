@@ -56,7 +56,7 @@
   <?php include('includes/message.php')?>
 
   <section 
-    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-sm"
+    class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md"
   >
     <div>
       <h1 class=" text-[2rem] text-dark/75  font-semibold">Items</h1>
@@ -121,17 +121,17 @@
                     for($i=0;$i<sizeof($data_content_desc);$i++) {
                       ?>
                       <div id="item">
-                        <button type="button">
+                        <button id="delItem" type="button">
                           <span></span>
                           <span></span>
                         </button>
-                        <div>
+                        <div id="element">
                           <label>Sub-title:</label>
                           <input type="text" name="data_content_title[]" value="<?=$data_content_title[$i]?>" placeholder="e.g: Presentation">
                         </div>
-                        <div>
+                        <div id="element">
                           <label>Description:</label>
-                          <textarea name="data_content_desc[]" placeholder="e.g: Le diplomé de la filière Génie Informatique ..." rows="4"><?=$data_content_desc[$i]?></textarea>
+                          <textarea name="data_content_desc[]" class="summernote"><?=$data_content_desc[$i]?></textarea>
                         </div>
                       </div>
                       <?php
@@ -139,17 +139,17 @@
                   } else {
                     ?>
                     <div id="item">
-                      <button type="button">
+                      <button id="delItem" onclick="handleDeleteItem(event)" type="button">
                         <span></span>
                         <span></span>
                       </button>
-                      <div>
+                      <div id="element">
                         <label>Sub-title:</label>
                         <input type="text" name="data_content_title[]" placeholder="e.g: Presentation">
                       </div>
-                      <div>
+                      <div id="element">
                         <label>Description:</label>
-                        <textarea name="data_content_desc[]" placeholder="e.g: Le diplomé de la filière Génie Informatique ..." rows="4"></textarea>
+                        <textarea name="data_content_desc[]" class="summernote"></textarea>
                       </div>
                     </div>
                     <?php
@@ -180,53 +180,6 @@
     </div>
 
   </section>
-
-  <script>
-    const handleAddItem = () => {
-      const listItem = document.getElementById('items');
-
-      const item = document.createElement('div')
-      
-      const deleteBtn = document.createElement('button');
-      const span1 = document.createElement('span');
-      const span2 = document.createElement('span');
-      deleteBtn.setAttribute('type','button')
-      deleteBtn.appendChild(span1)
-      deleteBtn.appendChild(span2)
-      deleteBtn.onclick = () => {
-        deleteBtn.parentElement.remove()
-      }
-      
-      const stitleDiv = document.createElement('div')
-      const stitleLabel = document.createElement('label')
-      const stitleInput = document.createElement('input')
-      
-      const descDiv = document.createElement('div')
-      const descLabel = document.createElement('label')
-      const decTextarea = document.createElement('textarea')
-      
-      item.setAttribute('id','item')
-      stitleLabel.textContent = 'Sub-title:'
-      descLabel.textContent = 'Description:'
-      stitleInput.setAttribute('placeholder','e.g: Presentation')
-      stitleInput.setAttribute('name','data_content_title[]')
-      decTextarea.setAttribute('placeholder','e.g: Le diplomé de la filière Génie Informatique ...')
-      decTextarea.setAttribute('name','data_content_desc[]')
-      decTextarea.setAttribute('rows','4')
-
-      stitleDiv.appendChild(stitleLabel)
-      stitleDiv.appendChild(stitleInput)
-      descDiv.appendChild(descLabel,)
-      descDiv.appendChild(decTextarea)
-      
-      item.appendChild(deleteBtn)
-      item.appendChild(stitleDiv)
-      item.appendChild(descDiv)
-
-      listItem.appendChild(item)
-
-    }
-  </script>
   
 <?php 
 

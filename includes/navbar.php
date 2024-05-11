@@ -1,4 +1,4 @@
-<header class="sticky top-0 left-0 text-dark shadow-md z-50">
+<header class="sticky top-0 left-0 text-dark shadow-md z-[60]">
   <nav class="h-[4.7rem] p-4 py-3 flex justify-between bg-highlight items-center">
     <div class="">
       <h2 class="text-primary text-2xl font-semibold">

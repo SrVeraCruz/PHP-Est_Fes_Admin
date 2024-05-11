@@ -91,7 +91,7 @@ input, textarea, select {
     #item {
       @apply flex flex-col gap-2 p-2 shadow-sm rounded-md relative;
 
-      button {
+      button#delItem {
         @apply absolute right-2 top-4;
 
         span {
@@ -103,14 +103,14 @@ input, textarea, select {
         }
       }
       
-      div {
+      div#element {
         @apply flex flex-col;
         
         label {
           @apply font-bold;
         }
         
-        input, textarea {
+        input {
           @apply shadow-md p-3 outline-none text-[.9rem] rounded-md;
         }
       }
