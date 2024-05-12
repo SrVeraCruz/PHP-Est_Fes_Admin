@@ -69,11 +69,17 @@
       </ul>
     </div>
 
-    <div class="text-softDark flex w-full mt-2">
+    
+    <div class="text-softDark flex flex-col w-full">
+      <div  class="flex w-full justify-end">
+        <a href="user-view.php" class="btn btn-default !bg-highlight">
+          Back
+        </a>
+      </div>
       
-    <form action="controller/user-code.php" method="post" enctype="multipart/form-data" class="m-6 sm:m-2 sm:mx-4 mx-8 w-full h-full">
-      <h1 class="text-center text-[2rem] xs:text-2xl font-semibold border-b-2 pb-2 mb-6">Edit <?=$role === '1' ? 'Admin' : 'User'?></h1>
-      <input type="hidden" name="user_id" value="<?=$user_id?>" placeholder="Enter your first name" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+      <form action="controller/user-code.php" method="post" enctype="multipart/form-data" class="m-6 sm:m-2 sm:mx-4 mx-8 w-full h-full">
+        <h1 class="text-center text-[2rem] xs:text-2xl font-semibold border-b-2 pb-2 mb-6">Edit <?=$role === '1' ? 'Admin' : 'User'?></h1>
+        <input type="hidden" name="user_id" value="<?=$user_id?>" placeholder="Enter your first name" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
         <div class="px-7 text-[.9rem] flex flex-col gap-5">
           <div class="flex flex-col">
             <label class="font-bold">First-name:</label>

@@ -73,7 +73,13 @@
       </ul>
     </div>
 
-    <div class="text-softDark flex w-full mt-2">
+    
+    <div class="text-softDark flex flex-col w-full">
+      <div  class="flex w-full justify-end">
+        <a href="item-view.php" class="btn btn-default !bg-highlight">
+          Back
+        </a>
+      </div>
       
       <form action="controller/item-code.php" method="post" class="w-full h-full">
 

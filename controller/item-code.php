@@ -38,10 +38,10 @@
       }
 
       $data_content_json = json_encode($data_content);
-
+      $escaped_data_content_json = addslashes($data_content_json);
     }
 
-    if($_SESSION['message-warning']) {
+    if(isset($_SESSION['message-warnings'])) {
       // Redirect if have an error message
       $_SESSION['add_item_data'] = $_POST;
       header('Location: ../item-add.php');
@@ -49,8 +49,8 @@
     
     } else {
       $item_query = "INSERT INTO items (category_id,title,slug,data_content,meta_title) 
-      VALUES ('$category_id','$title','$slug','$data_content_json','$meta_title') LIMIT 1";
-      
+      VALUES ('$category_id','$title','$slug','$escaped_data_content_json','$meta_title') LIMIT 1";
+
       $item_result = mysqli_query($con,$item_query);
 
       if($item_result) {
@@ -60,6 +60,7 @@
 
       } else {
         $_SESSION['message-warning'] = 'Sommething went wrong';
+        $_SESSION['add_item_data'] = $_POST;
         header('Location: ../item-add.php');
         exit();
       }
@@ -102,6 +103,7 @@
       }
 
       $data_content_json = json_encode($data_content);
+      $escaped_data_content_json = addslashes($data_content_json);
 
     }
 
@@ -113,7 +115,7 @@
       exit();
     
     } else {
-      $item_query = "UPDATE items SET category_id = '$category_id', title = '$title', slug = '$slug',data_content = '$data_content_json', meta_title = '$meta_title', status = '$status' WHERE id = '$item_id' LIMIT 1";
+      $item_query = "UPDATE items SET category_id = '$category_id', title = '$title', slug = '$slug',data_content = '$escaped_data_content_json', meta_title = '$meta_title', status = '$status' WHERE id = '$item_id' LIMIT 1";
       
       $item_result = mysqli_query($con,$item_query);
 
