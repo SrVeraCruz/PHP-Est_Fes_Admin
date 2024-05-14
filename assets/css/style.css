@@ -776,10 +776,6 @@ video {
   min-width: 100%;
 }
 
-.max-w-44 {
-  max-width: 11rem;
-}
-
 .max-w-\[100vw\] {
   max-width: 100vw;
 }
@@ -936,6 +932,11 @@ video {
   border-color: rgb(150 112 54 / var(--tw-border-opacity));
 }
 
+.\!bg-highlight {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(234 232 251 / var(--tw-bg-opacity)) !important;
+}
+
 .bg-bgErrorAlert {
   --tw-bg-opacity: 1;
   background-color: rgb(235 199 195 / var(--tw-bg-opacity));
@@ -992,21 +993,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-softDark {
-  --tw-bg-opacity: 1;
-  background-color: rgb(107 107 107 / var(--tw-bg-opacity));
-}
-
-.\!bg-softDark {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(107 107 107 / var(--tw-bg-opacity)) !important;
-}
-
-.\!bg-highlight {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(234 232 251 / var(--tw-bg-opacity)) !important;
 }
 
 .object-cover {
@@ -1344,13 +1330,68 @@ input, textarea, select {
 #table-wrapper {
   width: 100% !important;
   overflow: auto !important;
-  table#basic {
+  .dt-length {
+    display: flex;
+  }
+  .dt-length {
+    align-items: center;
+  }
+  .dt-length {
+    justify-content: flex-start;
+  }
+  .dt-length {
+    gap: 0.25rem;
+  }
+  .dt-length {
+    text-transform: capitalize;
+  }
+  .dt-search {
+    display: flex;
+  }
+  .dt-search {
+    align-items: center;
+  }
+  .dt-search {
+    justify-content: flex-end;
+  }
+  .dt-layout-cell {
+    label {
+      font-size: .9rem !important;
+    }
+    label {
+      color: rgb(27 27 27 / 0.75);
+    }
+    input, textarea, select {
+      width: auto !important;
+    }
+  }
+  .dt-info {
+    font-size: .9rem;
+  }
+  .dt-info {
+    font-weight: 400;
+  }
+  .dt-info {
+    color: rgb(27 27 27 / 0.75);
+  }
+  .dt-paging-button {
+    padding: 0.25rem;
+  }
+  .dt-paging-button {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .dt-paging-button {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  table {
     height: 100%;
   }
-  table#basic {
+  table {
     width: 100%;
   }
-  table#basic {
+  table {
     tr {
       border-bottom-width: 1px;
     }
@@ -1359,6 +1400,9 @@ input, textarea, select {
       border-color: rgb(209 213 219 / var(--tw-border-opacity));
     }
     tr {
+      th {
+        min-width: 9rem !important;
+      }
       th {
         text-wrap: nowrap;
       }
@@ -1382,6 +1426,18 @@ input, textarea, select {
       }
       th, td {
         color: rgb(27 27 27 / 0.75);
+      }
+      td {
+        max-width: 12.5rem;
+      }
+      td {
+        overflow: hidden;
+      }
+      td {
+        text-overflow: ellipsis;
+      }
+      td {
+        text-wrap: nowrap;
       }
       td {
         a {

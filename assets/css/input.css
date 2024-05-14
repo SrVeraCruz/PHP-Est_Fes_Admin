@@ -31,23 +31,52 @@ input, textarea, select {
 }
 
 #table-wrapper {
-  @apply !overflow-auto !w-full;
+  @apply !overflow-auto !w-full ;
+  
+  .dt-length {
+    @apply flex justify-start items-center gap-1 capitalize;
+  }
+  
+  .dt-search {
+    @apply flex justify-end items-center;
+  }
+  
+  .dt-layout-cell {
 
-  table#basic {
+    label {
+      @apply !text-[.9rem] text-dark/75 ;
+    }
+
+    input, textarea, select {
+      @apply !w-auto;
+    }
+  }
+
+  .dt-info {
+    @apply text-[.9rem] text-dark/75 font-normal
+  }
+
+  .dt-paging-button {
+    @apply p-1 px-2 text-sm;
+  }
+
+  table {
     @apply w-full h-full;
-    
+
     tr {
       @apply border-b border-gray-300;
       
       th {
-       @apply uppercase text-nowrap;
+       @apply uppercase text-nowrap !min-w-36;
       }
 
       th, td {
-        @apply text-sm text-dark/75 px-4 py-2 text-start
+        @apply text-sm text-dark/75 px-4 py-2 text-start 
       }
 
       td {
+        @apply text-nowrap max-w-[12.5rem] text-ellipsis overflow-hidden;
+        
         a {
           @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1;
         }
