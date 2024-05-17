@@ -43,7 +43,7 @@ unset($_SESSION['add_item_data']);
       </a>
     </div>
 
-    <form action="controller/item-code.php" method="post" class="w-full h-full">
+    <form action="controller/item-code.php" method="post" enctype="multipart/form-data" class="w-full h-full">
 
       <div class="px-7 text-[.9rem] flex flex-col gap-5">
         <div class="flex flex-col w-full">
@@ -83,6 +83,7 @@ unset($_SESSION['add_item_data']);
             <input type="text" name="meta_title" value="<?= $meta_title ?>" placeholder="e.g: Informatique | Est-Fes" class="shadow-md p-3 outline-none rounded-md">
           </div>
         </div>
+
         <div class="mt-2 flex flex-col gap-2">
           <h2 class="text-center -mb-2 text-lg font-semibold ">Page Content</h2>
           <div id="item_content_list" class="border-b-2 border-t-2 py-1 pb-2 flex flex-col gap-2">
@@ -127,6 +128,7 @@ unset($_SESSION['add_item_data']);
               }
               ?>
             </div>
+
             <div class="flex items-center justify-center">
               <button type="button" onclick="handleAddItem()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -134,6 +136,11 @@ unset($_SESSION['add_item_data']);
                 </svg>
               </button>
             </div>
+
+          </div>
+          <div class="flex flex-col w-full">
+            <label class="font-bold">File:</label>
+            <input type="file" name="file" class="shadow-md p-3 outline-none rounded-md">
           </div>
         </div>
 

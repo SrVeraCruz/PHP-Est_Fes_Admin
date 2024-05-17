@@ -12,6 +12,8 @@ if (isset($_POST['add_item_btn'])) {
   $meta_title = mysqli_real_escape_string($con, $_POST['meta_title']);
   $data_content_title = $_POST['data_content_title'];
   $data_content_desc = $_POST['data_content_desc'];
+  $file_info = $_FILES['file'];
+  $file_name = $_FILES['file']['name'];
 
   // Inputs Verification
   if (!$name) {
@@ -42,6 +44,30 @@ if (isset($_POST['add_item_btn'])) {
 
     $data_content_json = json_encode($data_content);
     $escaped_data_content_json = addslashes($data_content_json);
+
+    // Work on File
+    if ($file_name == null || $file_name == '') {
+      $file_to_upload = '';
+    } else {
+      $allowed_files = ['pdf'];
+      $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
+
+      if (in_array($file_extention, $allowed_files)) {
+        if ($file_info['size'] <= 10000000) {
+          $time = time();
+          $file_to_upload = $time . $file_name;
+          $file_destination_path = '../uploads/files/' . $file_to_upload;
+
+          if ((move_uploaded_file($file_info["tmp_name"], $file_destination_path)) == false) {
+            $_SESSION['message-warning'] = "Sommething went wrong on uploading File";
+          }
+        } else {
+          $_SESSION['message-warning'] = "File size too big. Should be less than 10Mb";
+        }
+      } else {
+        $_SESSION['message-warning'] = "File Should be 'pdf'";
+      }
+    }
   }
 
   if (isset($_SESSION['message-warnings'])) {
@@ -50,8 +76,9 @@ if (isset($_POST['add_item_btn'])) {
     header('Location: ../item-add.php');
     exit();
   } else {
-    $item_query = "INSERT INTO items (category_id,name,title,slug,data_content,meta_title) 
-      VALUES ('$category_id','$name','$title','$slug','$escaped_data_content_json','$meta_title') LIMIT 1";
+    $item_query = "INSERT INTO items 
+      (category_id,name,title,slug,data_content,meta_title,file) 
+      VALUES ('$category_id','$name','$title','$slug','$escaped_data_content_json','$meta_title','$file_to_upload') LIMIT 1";
 
     $item_result = mysqli_query($con, $item_query);
 
@@ -77,6 +104,9 @@ if (isset($_POST['add_item_btn'])) {
   $data_content_title = $_POST['data_content_title'];
   $data_content_desc = $_POST['data_content_desc'];
   $status = mysqli_real_escape_string($con, $_POST['status'] ?? null) == 'on' ? '1' : '0';
+  $file_old_name = mysqli_real_escape_string($con, $_POST['file_old_name']);
+  $file_name = mysqli_real_escape_string($con, $_FILES['file']['name']);
+  $file_info = $_FILES['file'];
 
   // Inputs Verification
   if (!$name) {
@@ -107,6 +137,26 @@ if (isset($_POST['add_item_btn'])) {
 
     $data_content_json = json_encode($data_content);
     $escaped_data_content_json = addslashes($data_content_json);
+
+    // Check file status
+    if ($file_name == null || $file_name == '') {
+      $file_to_upload = $file_old_name;
+    } else {
+      $allowed_files = ['pdf'];
+      $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
+
+      if (in_array($file_extention, $allowed_files)) {
+        if ($file_info['size'] <= 10000000) {
+          $time = time();
+          $file_to_upload = $time . $file_name;
+          $file_destination_path = '../uploads/files/' . $file_to_upload;
+        } else {
+          $_SESSION['message-warning'] = "File size too big. Should be less than 1Mb";
+        }
+      } else {
+        $_SESSION['message-warning'] = "File Should be 'pdf'";
+      }
+    }
   }
 
   if (isset($_SESSION['message-warning'])) {
@@ -116,17 +166,32 @@ if (isset($_POST['add_item_btn'])) {
     header('Location: ../item-edit.php?id=' . $item_id);
     exit();
   } else {
-    $item_query = "UPDATE items SET category_id = '$category_id', name = '$name', title = '$title', slug = '$slug',data_content = '$escaped_data_content_json', meta_title = '$meta_title', status = '$status' WHERE id = '$item_id' LIMIT 1";
+    $item_query = "UPDATE items SET category_id = '$category_id', name = '$name', title = '$title', slug = '$slug',data_content = '$escaped_data_content_json', meta_title = '$meta_title', file = '$file_to_upload', status = '$status' WHERE id = '$item_id' LIMIT 1";
 
     $item_result = mysqli_query($con, $item_query);
 
     if ($item_result) {
+      if ($file_name != null || $file_name != '') {
+        $file_old_destination_path = '../uploads/files/' . $file_old_name;
+
+        if (file_exists($file_old_destination_path)) {
+          unlink($file_old_destination_path);
+        }
+
+        var_dump($file_old_name);
+        if ((move_uploaded_file($file_info["tmp_name"], $file_destination_path)) == false) {
+          $_SESSION['message-warning'] = "Sommething went wrong on uploading File";
+          $_SESSION['edit_item_data'] = $_POST;
+          header('Location: ../item-edit.php?id=' . $item_id);
+          exit();
+        }
+      }
+
       $_SESSION['message-success'] = 'Item updated successfully';
       header('Location: ../item-view.php');
       exit();
     } else {
       $_SESSION['edit_item_data'] = $_POST;
-      //var_dump($_POST, $item_result, $data_content_json);
       $_SESSION['message-warning'] = 'Sommething went wrong';
       header('Location: ../item-edit.php?id=' . $item_id);
       exit();
@@ -136,7 +201,7 @@ if (isset($_POST['add_item_btn'])) {
   // Get item to confirm delete
   $item_id = mysqli_real_escape_string($con, $_POST['confirm_del_item_btn']);
 
-  $item_query = "SELECT id,title FROM items WHERE id = $item_id LIMIT 1";
+  $item_query = "SELECT id,title,file FROM items WHERE id = $item_id LIMIT 1";
   $item_result = mysqli_query($con, $item_query);
 
   if (mysqli_num_rows($item_result) > 0) {
@@ -153,12 +218,18 @@ if (isset($_POST['add_item_btn'])) {
 } elseif (isset($_POST['delete_item_btn'])) {
   // Delete item
   $item_id = mysqli_real_escape_string($con, $_POST['delete_item_btn']);
+  $del_item_file_name = mysqli_real_escape_string($con, $_POST['delete_item_file_name']);
 
   $delete_item_query = "DELETE FROM items WHERE id = '$item_id' LIMIT 1";
 
   $delete_item_result = mysqli_query($con, $delete_item_query);
 
   if ($delete_item_result) {
+    $file_old_destination_path = '../uploads/files/' . $del_item_file_name;
+    if (file_exists($file_old_destination_path)) {
+      unlink($file_old_destination_path);
+    }
+
     $_SESSION['message-success'] = 'Item deleted successfully';
     header('Location: ../item-view.php');
     exit();

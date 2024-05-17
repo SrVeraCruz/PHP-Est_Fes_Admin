@@ -14,6 +14,7 @@ if (isset($_SESSION['del-user-data'])) {
 
 $del_user_id = $_SESSION['del-user-data']['id'] ?? null;
 $del_user_name = ($_SESSION['del-user-data']['fname'] ?? null) . '&nbsp;' . ($_SESSION['del-user-data']['lname'] ?? null);
+$del_user_avatar = $_SESSION['del-user-data']['avatar'] ?? null;
 $del_user_role = $_SESSION['del-user-data']['role_as'] ?? null;
 
 unset($_SESSION['del-user-data']);
@@ -53,6 +54,7 @@ unset($_SESSION['del-user-data']);
         </button>
         <form action="controller/user-code.php" method="post">
           <input type="hidden" value="<?= $del_user_role ?>" name="delete_user_role">
+          <input type="hidden" value="<?= $del_user_avatar ?>" name="delete_user_avatar_name">
           <button name="delete_user_btn" value="<?= $del_user_id ?>" class="btn-red">
             Yes
           </button>

@@ -27,6 +27,7 @@ $title = $item_data['title'] ?? null;
 $slug = $item_data['slug'] ?? null;
 $data_content = json_decode($item_data['data_content']) ?? null;
 $meta_title = $item_data['meta_title'] ?? null;
+$file_old_name = $item_data['file'] ?? null;
 $status = $item_data['status'] ?? null;
 
 $data_content_title = [];
@@ -77,7 +78,7 @@ if (isset($_SESSION['edit_item_data'])) {
       </a>
     </div>
 
-    <form action="controller/item-code.php" method="post" class="w-full h-full">
+    <form action="controller/item-code.php" enctype="multipart/form-data" method="post" class="w-full h-full">
 
       <div class="px-7 text-[.9rem] flex flex-col gap-5">
         <div class="flex flex-col w-full">
@@ -169,6 +170,11 @@ if (isset($_SESSION['edit_item_data'])) {
                 </svg>
               </button>
             </div>
+          </div>
+          <div class="flex flex-col w-full">
+            <label class="font-bold">File:</label>
+            <input type="hidden" name="file_old_name" value="<?= $file_old_name ?>">
+            <input type="file" name="file" class="shadow-md p-3 outline-none rounded-md">
           </div>
         </div>
 
