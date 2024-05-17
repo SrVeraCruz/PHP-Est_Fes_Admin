@@ -127,7 +127,7 @@ if (isset($_SESSION['edit_item_data'])) {
                 for ($i = 0; $i < sizeof($data_content_desc); $i++) {
               ?>
                   <div id="item">
-                    <button id="delItem" type="button">
+                    <button id="delItem" onclick="handleDeleteItem(event)" type="button">
                       <span></span>
                       <span></span>
                     </button>

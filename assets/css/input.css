@@ -31,23 +31,25 @@ input, textarea, select {
 }
 
 #table-wrapper {
-  @apply !overflow-auto !w-full ;
-  
+  @apply !overflow-auto !w-full;
+
   .dt-length {
     @apply flex justify-start items-center gap-1 capitalize;
   }
-  
+
   .dt-search {
     @apply flex justify-end items-center;
   }
-  
+
   .dt-layout-cell {
 
     label {
-      @apply !text-[.9rem] text-dark/75 ;
+      @apply !text-[.9rem] text-dark/75;
     }
 
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       @apply !w-auto;
     }
   }
@@ -65,22 +67,23 @@ input, textarea, select {
 
     tr {
       @apply border-b border-gray-300;
-      
+
       th {
-       @apply uppercase text-nowrap !min-w-36;
+        @apply uppercase text-nowrap !min-w-36;
       }
 
-      th, td {
-        @apply text-sm text-dark/75 px-4 py-2 text-start 
+      th,
+      td {
+        @apply text-sm text-dark/75 px-4 py-2 text-start
       }
 
       td {
         @apply text-nowrap max-w-[12.5rem] text-ellipsis overflow-hidden;
-        
+
         a {
           @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1;
         }
-        
+
         button {
           @apply py-1 px-4 capitalize rounded-sm flex text-sm gap-1
         }
@@ -88,20 +91,23 @@ input, textarea, select {
     }
   }
 }
-  
-  #navbar-hamburguer.open {
-    transform: translateX(0.35rem);
-    transition: .1s ease-in-out;
-    :nth-child(1) {
-      transform: translateY(0.7rem);
-      rotate: 45deg;
+
+#navbar-hamburguer.open {
+  transform: translateX(0.35rem);
+  transition: .1s ease-in-out;
+
+  :nth-child(1) {
+    transform: translateY(0.7rem);
+    rotate: 45deg;
     transition: .1s ease-in-out;
   }
+
   :nth-child(2) {
     opacity: 0;
     transform: translateX(-0.35rem);
     transition: .1s ease-in-out;
   }
+
   :nth-child(3) {
     transform: translateY(-0.7rem);
     rotate: -45deg;
@@ -131,14 +137,14 @@ input, textarea, select {
           @apply -rotate-45 -translate-y-[.1rem];
         }
       }
-      
+
       div#element {
         @apply flex flex-col;
-        
+
         label {
           @apply font-bold;
         }
-        
+
         input {
           @apply shadow-md p-3 outline-none text-[.9rem] rounded-md;
         }

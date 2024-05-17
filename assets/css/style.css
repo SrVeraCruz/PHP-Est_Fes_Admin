@@ -990,10 +990,6 @@ video {
   background-color: rgb(85 66 246 / var(--tw-bg-opacity));
 }
 
-.bg-primary\/40 {
-  background-color: rgb(85 66 246 / 0.4);
-}
-
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -1365,7 +1361,9 @@ input, textarea, select {
     label {
       color: rgb(27 27 27 / 0.75);
     }
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       width: auto !important;
     }
   }
@@ -1413,22 +1411,27 @@ input, textarea, select {
       th {
         text-transform: uppercase;
       }
-      th, td {
+      th,
+      td {
         padding-left: 1rem;
         padding-right: 1rem;
       }
-      th, td {
+      th,
+      td {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
       }
-      th, td {
+      th,
+      td {
         text-align: start;
       }
-      th, td {
+      th,
+      td {
         font-size: 0.875rem;
         line-height: 1.25rem;
       }
-      th, td {
+      th,
+      td {
         color: rgb(27 27 27 / 0.75);
       }
       td {
