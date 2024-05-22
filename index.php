@@ -1,11 +1,9 @@
 <?php
-
-include('middleware/authentication.php');
-include('includes/header.php');
-
+require 'middleware/authentication.php';
+require 'includes/header.php';
 ?>
 
-<?php include('includes/message.php') ?>
+<?php require 'includes/message.php' ?>
 
 <section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md">
   <div>
@@ -113,7 +111,5 @@ include('includes/header.php');
 </section>
 
 <?php
-
-include('includes/footer.php')
-
+require 'includes/footer.php'
 ?>

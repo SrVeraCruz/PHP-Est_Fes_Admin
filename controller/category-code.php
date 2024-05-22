@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-include('../config/db.php');
+require '../middleware/isSuperAdminRequest.php';
+require '../config/db.php';
 
 if (isset($_POST['add_category_btn'])) {
   // Add category

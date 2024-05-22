@@ -1,7 +1,6 @@
 <?php
-
-include('middleware/authentication.php');
-include('includes/header.php');
+require 'middleware/authentication.php';
+require 'includes/header.php';
 
 $name = $_SESSION['add_item_data']['name'] ?? null;
 $title = $_SESSION['add_item_data']['title'] ?? null;
@@ -13,11 +12,9 @@ $meta_title = $_SESSION['add_item_data']['meta_title'] ?? null;
 $status = $_SESSION['add_item_data']['status'] ?? null;
 
 unset($_SESSION['add_item_data']);
-
-
 ?>
 
-<?php include('includes/message.php') ?>
+<?php require 'includes/message.php' ?>
 
 <section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md">
   <div>
@@ -163,7 +160,5 @@ unset($_SESSION['add_item_data']);
 </section>
 
 <?php
-
-include('includes/footer.php')
-
+require 'includes/footer.php';
 ?>

@@ -1,7 +1,6 @@
 <?php
-
-include('middleware/authentication.php');
-include('includes/header.php');
+require 'middleware/authentication.php';
+require 'includes/header.php';
 
 if (isset($_GET['id'])) {
   $item_id = $_GET['id'];
@@ -52,7 +51,7 @@ if (isset($_SESSION['edit_item_data'])) {
 
 ?>
 
-<?php include('includes/message.php') ?>
+<?php require 'includes/message.php' ?>
 
 <section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md">
   <div>
@@ -197,7 +196,5 @@ if (isset($_SESSION['edit_item_data'])) {
 </section>
 
 <?php
-
-include('includes/footer.php')
-
+require 'includes/footer.php';
 ?>
