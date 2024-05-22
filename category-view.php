@@ -4,8 +4,24 @@ include('middleware/authentication.php');
 include('includes/header.php');
 
 $editing = false;
-if (isset($_SESSION['category-data'])) {
+if (isset($_SESSION['edit-category-data'])) {
   $editing = true;
+}
+
+$category_id = $_SESSION['edit-category-data']['id'] ?? null;
+$category_name = $_SESSION['edit-category-data']['name'] ?? null;
+$category_title = $_SESSION['edit-category-data']['title'] ?? null;
+$parent_category_id = $_SESSION['edit-category-data']['parent_category_id'] ?? null;
+$navbar_status = $_SESSION['edit-category-data']['navbar_status'] ?? ($_SESSION['add-category-data']['navbar_status'] ?? null) === 'on' ? '1' : '0';
+$logo_name = $_SESSION['edit-category-data']['logo'] ?? null;
+unset($_SESSION['edit-category-data']);
+
+if (isset($_SESSION['add-category-data'])) {
+  $category_name = $_SESSION['add-category-data']['name'] ?? null;
+  $category_title = $_SESSION['add-category-data']['title'] ?? null;
+  $parent_category_id = $_SESSION['add-category-data']['parent_category_id'] ?? null;
+  $navbar_status = ($_SESSION['add-category-data']['navbar_status'] ?? null) === 'on' ? '1' : '0';
+  unset($_SESSION['add-category-data']);
 }
 
 $confirm_delete = false;
@@ -15,14 +31,10 @@ if (isset($_SESSION['del-category-data'])) {
 
 $del_category_id = $_SESSION['del-category-data']['id'] ?? null;
 $del_category_name = $_SESSION['del-category-data']['name'] ?? null;
+$del_category_logo_name = $_SESSION['del-category-data']['logo'] ?? null;
 unset($_SESSION['del-category-data']);
 
-$category_id = $_SESSION['category-data']['id'] ?? null;
-$category_name = $_SESSION['category-data']['name'] ?? null;
-$parent_category_id = $_SESSION['category-data']['parent_category_id'] ?? null;
-$navbar_status = $_SESSION['category-data']['navbar_status'] ?? null;
 
-unset($_SESSION['category-data']);
 ?>
 
 <?php include('includes/message.php') ?>
@@ -63,6 +75,7 @@ unset($_SESSION['category-data']);
           No
         </button>
         <form action="controller/category-code.php" method="post">
+          <input type="hidden" name="del_category_logo_name" value="<?= $del_category_logo_name ?>">
           <button name="delete_cat_btn" value="<?= $del_category_id ?>" class="btn-red">
             Yes
           </button>
@@ -76,14 +89,15 @@ unset($_SESSION['category-data']);
   <?php endif ?>
 
   <div>
-    <form action="controller/category-code.php" method="post" class="flex flex-col gap-3">
+    <form action="controller/category-code.php" method="post" enctype="multipart/form-data" class="flex flex-col gap-3">
       <div class="flex flex-col gap-4">
         <div>
           <label>
             <?= $editing ? 'Edit category ' . $category_name : 'New category name' ?>
           </label>
+
           <div class="flex gap-1.5">
-            <input type="text" name="category_name" value="<?= $category_name && $editing ? $category_name : '' ?>" placeholder="Category name">
+            <input type="text" name="name" value="<?= $category_name ?>" placeholder="e.g: E-L">
             <select name="parent_category_id">
               <option value="">No parent category</option>
               <?php
@@ -93,7 +107,7 @@ unset($_SESSION['category-data']);
               if (mysqli_num_rows($category_result) > 0) {
               ?>
                 <?php foreach ($category_result as $category) : ?>
-                  <option value="<?= $category['id'] ?>" <?= $parent_category_id === $category['id'] && $editing ? 'selected' : '' ?> class="<?= $category_id === $category['id'] ? 'hidden' : '' ?>"><?= $category['name'] ?></option>
+                  <option value="<?= $category['id'] ?>" <?= $parent_category_id === $category['id'] ? 'selected' : '' ?> class="<?= $category_id === $category['id'] ? 'hidden' : '' ?>"><?= $category['name'] ?></option>
                 <?php endforeach ?>
               <?php
               }
@@ -102,14 +116,23 @@ unset($_SESSION['category-data']);
             </select>
           </div>
         </div>
+
+        <div class="flex flex-col w-full">
+          <label>Category title</label>
+          <input type="text" name="title" value="<?= $category_title ?>" placeholder="e.g: E-Learning">
+        </div>
+        <div class="flex flex-col w-full">
+          <label>Category logo</label>
+          <?php if ($editing) : ?>
+            <input type="hidden" name="old_cat_logo_name" value="<?= $logo_name ?>">
+          <?php endif ?>
+          <input type="file" name="category_logo">
+        </div>
+
         <div class="flex flex-col items-start -mt-2">
           <label>Navbar</label>
           <div class="flex items-center gap-2 text-sm text-softDark">
-            <?php if ($editing) : ?>
-              <input type="checkbox" name="navbar_status" <?= $navbar_status === '1' ? 'checked' : '' ?> class="w-auto">
-            <?php else : ?>
-              <input type="checkbox" name="navbar_status" class="w-auto">
-            <?php endif ?>
+            <input type="checkbox" name="navbar_status" <?= $navbar_status === '1' ? 'checked' : '' ?> class="w-auto">
             (cheked=hidden, unchecked=visible)
           </div>
         </div>
@@ -124,7 +147,7 @@ unset($_SESSION['category-data']);
           <button type="submit" name="edit_category_btn" class="btn-primary self-start">
             Update
           </button>
-          <input type="hidden" value="<?= $category_id ?>" name="category_id">
+          <input type="hidden" value="<?= $category_id ?>" name="id">
 
         <?php
         } else {

@@ -15,7 +15,7 @@ if (isset($_POST['add_item_btn'])) {
   $data_content_desc = $_POST['data_content_desc'];
   $status = mysqli_real_escape_string($con, $_POST['status'] ?? null) == 'on' ? '1' : '0';
   $file_info = $_FILES['file'];
-  $file_name = $_FILES['file']['name'];
+  $file_name = mysqli_real_escape_string($con, $_FILES['file']['name']);
 
   // Inputs Verification
   if (!$name) {
@@ -72,7 +72,7 @@ if (isset($_POST['add_item_btn'])) {
     }
   }
 
-  if (isset($_SESSION['message-warnings'])) {
+  if (isset($_SESSION['message-warning'])) {
     // Redirect if have an error message
     $_SESSION['add_item_data'] = $_POST;
     header('Location: ../item-add.php');
@@ -153,7 +153,7 @@ if (isset($_POST['add_item_btn'])) {
           $file_to_upload = $time . $file_name;
           $file_destination_path = '../uploads/files/' . $file_to_upload;
         } else {
-          $_SESSION['message-warning'] = "File size too big. Should be less than 1Mb";
+          $_SESSION['message-warning'] = "File size too big. Should be less than 10Mb";
         }
       } else {
         $_SESSION['message-warning'] = "File Should be 'pdf','png','jpg','jpeg'";
@@ -180,7 +180,6 @@ if (isset($_POST['add_item_btn'])) {
           unlink($file_old_destination_path);
         }
 
-        var_dump($file_old_name);
         if ((move_uploaded_file($file_info["tmp_name"], $file_destination_path)) == false) {
           $_SESSION['message-warning'] = "Sommething went wrong on uploading File";
           $_SESSION['edit_item_data'] = $_POST;
