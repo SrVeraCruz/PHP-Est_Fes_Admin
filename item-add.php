@@ -144,6 +144,14 @@ unset($_SESSION['add_item_data']);
           </div>
         </div>
 
+        <div class="flex flex-col items-start -mt-2">
+          <label class="font-bold">Status:</label>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" name="status" class="w-auto">
+            (cheked=hidden, unchecked=visible)
+          </div>
+        </div>
+
         <button type="submit" class="bg-primary p-3 rounded-md text-white uppercase mt-3 sm:mt-0 font-semibold hover:bg-primary/90 transition duration-200 ease-in-out sm:text-xs" name="add_item_btn">Add item</button>
 
       </div>

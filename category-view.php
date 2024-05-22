@@ -20,6 +20,7 @@ unset($_SESSION['del-category-data']);
 $category_id = $_SESSION['category-data']['id'] ?? null;
 $category_name = $_SESSION['category-data']['name'] ?? null;
 $parent_category_id = $_SESSION['category-data']['parent_category_id'] ?? null;
+$navbar_status = $_SESSION['category-data']['navbar_status'] ?? null;
 
 unset($_SESSION['category-data']);
 ?>
@@ -75,29 +76,42 @@ unset($_SESSION['category-data']);
   <?php endif ?>
 
   <div>
-    <form action="controller/category-code.php" method="post" class="flex flex-col gap-2">
-      <div>
-        <label>
-          <?= $editing ? 'Edit category ' . $category_name : 'New category name' ?>
-        </label>
-        <div class="flex gap-1.5">
-          <input type="text" name="category_name" value="<?= $category_name && $editing ? $category_name : '' ?>" placeholder="Category name">
-          <select name="parent_category_id">
-            <option value="">No parent category</option>
-            <?php
-            $category_query = "SELECT * FROM categories WHERE status != '2'";
-            $category_result = mysqli_query($con, $category_query);
+    <form action="controller/category-code.php" method="post" class="flex flex-col gap-3">
+      <div class="flex flex-col gap-4">
+        <div>
+          <label>
+            <?= $editing ? 'Edit category ' . $category_name : 'New category name' ?>
+          </label>
+          <div class="flex gap-1.5">
+            <input type="text" name="category_name" value="<?= $category_name && $editing ? $category_name : '' ?>" placeholder="Category name">
+            <select name="parent_category_id">
+              <option value="">No parent category</option>
+              <?php
+              $category_query = "SELECT * FROM categories WHERE status != '2'";
+              $category_result = mysqli_query($con, $category_query);
 
-            if (mysqli_num_rows($category_result) > 0) {
-            ?>
-              <?php foreach ($category_result as $category) : ?>
-                <option value="<?= $category['id'] ?>" <?= $parent_category_id === $category['id'] && $editing ? 'selected' : '' ?> class="<?= $category_id === $category['id'] ? 'hidden' : '' ?>"><?= $category['name'] ?></option>
-              <?php endforeach ?>
-            <?php
-            }
-            ?>
+              if (mysqli_num_rows($category_result) > 0) {
+              ?>
+                <?php foreach ($category_result as $category) : ?>
+                  <option value="<?= $category['id'] ?>" <?= $parent_category_id === $category['id'] && $editing ? 'selected' : '' ?> class="<?= $category_id === $category['id'] ? 'hidden' : '' ?>"><?= $category['name'] ?></option>
+                <?php endforeach ?>
+              <?php
+              }
+              ?>
 
-          </select>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col items-start -mt-2">
+          <label>Navbar</label>
+          <div class="flex items-center gap-2 text-sm text-softDark">
+            <?php if ($editing) : ?>
+              <input type="checkbox" name="navbar_status" <?= $navbar_status === '1' ? 'checked' : '' ?> class="w-auto">
+            <?php else : ?>
+              <input type="checkbox" name="navbar_status" class="w-auto">
+            <?php endif ?>
+            (cheked=hidden, unchecked=visible)
+          </div>
         </div>
       </div>
       <div>
@@ -138,7 +152,9 @@ unset($_SESSION['category-data']);
       <tbody>
         <?php
         $category_query = "SELECT c1.*, c2.name AS parent_name, c2.status AS parent_status FROM categories c1 
-            LEFT JOIN categories c2 ON c2.id = c1.parent_category_id WHERE c1.status != '2'";
+        LEFT JOIN categories c2 
+        ON c2.id = c1.parent_category_id 
+        WHERE c1.status != '2'";
         $category_result = mysqli_query($con, $category_query);
         if (mysqli_num_rows($category_result) > 0) {
         ?>
@@ -148,7 +164,7 @@ unset($_SESSION['category-data']);
               <td>
                 <?= $category['parent_name'] ?>&nbsp;<?= $category['parent_status'] === '2' ? '(Deleted)' : '' ?>
               </td>
-              <td><?= $category['status'] === '1' ? 'Hidden' : 'Visible' ?></td>
+              <td><?= $category['navbar_status'] === '1' ? 'Hidden' : 'Visible' ?></td>
               <td class="flex gap-1.5">
                 <form action="controller/category-code.php" method="post">
                   <button type="submit" name="get_cat_data_btn" value="<?= $category['id'] ?>" class="btn-primary">

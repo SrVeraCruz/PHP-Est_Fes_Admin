@@ -12,6 +12,7 @@ if (isset($_POST['add_item_btn'])) {
   $meta_title = mysqli_real_escape_string($con, $_POST['meta_title']);
   $data_content_title = $_POST['data_content_title'];
   $data_content_desc = $_POST['data_content_desc'];
+  $status = mysqli_real_escape_string($con, $_POST['status'] ?? null) == 'on' ? '1' : '0';
   $file_info = $_FILES['file'];
   $file_name = $_FILES['file']['name'];
 
@@ -77,8 +78,8 @@ if (isset($_POST['add_item_btn'])) {
     exit();
   } else {
     $item_query = "INSERT INTO items 
-      (category_id,name,title,slug,data_content,meta_title,file) 
-      VALUES ('$category_id','$name','$title','$slug','$escaped_data_content_json','$meta_title','$file_to_upload') LIMIT 1";
+      (category_id,name,title,slug,data_content,meta_title,file,status) 
+      VALUES ('$category_id','$name','$title','$slug','$escaped_data_content_json','$meta_title','$file_to_upload','$status') LIMIT 1";
 
     $item_result = mysqli_query($con, $item_query);
 

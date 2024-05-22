@@ -180,7 +180,10 @@ if (isset($_SESSION['edit_item_data'])) {
 
         <div class="flex flex-col items-start -mt-2">
           <label class="font-bold">Status:</label>
-          <input type="checkbox" name="status" <?= $status === '1' ? 'checked' : '' ?> class="w-auto">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" name="status" <?= $status === '1' ? 'checked' : '' ?> class="w-auto">
+            (cheked=hidden, unchecked=visible)
+          </div>
         </div>
 
         <button type="submit" class="bg-primary p-3 rounded-md text-white uppercase mt-3 sm:mt-0 font-semibold hover:bg-primary/90 transition duration-200 ease-in-out sm:text-xs" name="edit_item_btn">Update item</button>

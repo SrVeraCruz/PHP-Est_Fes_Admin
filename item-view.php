@@ -71,6 +71,7 @@ unset($_SESSION['del-item-data']);
     <table id="myDataTable">
       <thead>
         <tr>
+          <th>Name</th>
           <th>Title</th>
           <th>Category</th>
           <th>Status</th>
@@ -79,13 +80,16 @@ unset($_SESSION['del-item-data']);
       </thead>
       <tbody>
         <?php
-        $item_query = "SELECT it.id, it.title, it.status, ct.name AS cname 
+        $item_query = "SELECT it.id, it.name, it.title, it.status, ct.name AS cname 
             FROM items it JOIN categories ct ON it.category_id = ct.id";
         $item_result = mysqli_query($con, $item_query);
         if (mysqli_num_rows($item_result) > 0) {
         ?>
           <?php foreach ($item_result as $item) : ?>
             <tr>
+              <td>
+                <?= $item['name'] ?>
+              </td>
               <td>
                 <?= $item['title'] ?>
               </td>
