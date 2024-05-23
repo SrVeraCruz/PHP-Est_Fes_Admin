@@ -21,7 +21,7 @@ if (isset($_POST['add_category_btn'])) {
     if ($file_name == null || $file_name == '') {
       $file_to_upload = '';
     } else {
-      $allowed_files = ['png', 'jpg', 'jpeg'];
+      $allowed_files = ['png', 'jpg', 'jpeg', 'webp'];
       $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
 
       if (in_array($file_extention, $allowed_files)) {
@@ -37,7 +37,7 @@ if (isset($_POST['add_category_btn'])) {
           $_SESSION['message-warning'] = "File size too big. Should be less than 10Mb";
         }
       } else {
-        $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg'";
+        $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg','webp'";
       }
     }
   }
@@ -101,7 +101,7 @@ if (isset($_POST['add_category_btn'])) {
     if ($file_name == null || $file_name == '') {
       $file_to_upload = $file_old_name;
     } else {
-      $allowed_files = ['png', 'jpg', 'jpeg'];
+      $allowed_files = ['png', 'jpg', 'jpeg', 'webp'];
       $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
 
       if (in_array($file_extention, $allowed_files)) {
@@ -113,7 +113,7 @@ if (isset($_POST['add_category_btn'])) {
           $_SESSION['message-warning'] = "File size too big. Should be less than 1Mb";
         }
       } else {
-        $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg'";
+        $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg','webp'";
       }
     }
   }

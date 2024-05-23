@@ -51,7 +51,7 @@ if (isset($_POST['add_item_btn'])) {
     if ($file_name == null || $file_name == '') {
       $file_to_upload = '';
     } else {
-      $allowed_files = ['pdf', 'png', 'jpg', 'jpeg'];
+      $allowed_files = ['pdf', 'png', 'jpg', 'jpeg', 'webp'];
       $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
 
       if (in_array($file_extention, $allowed_files)) {
@@ -67,7 +67,7 @@ if (isset($_POST['add_item_btn'])) {
           $_SESSION['message-warning'] = "File size too big. Should be less than 10Mb";
         }
       } else {
-        $_SESSION['message-warning'] = "File Should be 'pdf','png','jpg','jpeg'";
+        $_SESSION['message-warning'] = "File Should be 'pdf','png','jpg','jpeg','webp'";
       }
     }
   }
@@ -144,7 +144,7 @@ if (isset($_POST['add_item_btn'])) {
     if ($file_name == null || $file_name == '') {
       $file_to_upload = $file_old_name;
     } else {
-      $allowed_files = ['pdf', 'png', 'jpg', 'jpeg'];
+      $allowed_files = ['pdf', 'png', 'jpg', 'jpeg', 'webp'];
       $file_extention = pathinfo($file_name, PATHINFO_EXTENSION);
 
       if (in_array($file_extention, $allowed_files)) {
@@ -156,7 +156,7 @@ if (isset($_POST['add_item_btn'])) {
           $_SESSION['message-warning'] = "File size too big. Should be less than 10Mb";
         }
       } else {
-        $_SESSION['message-warning'] = "File Should be 'pdf','png','jpg','jpeg'";
+        $_SESSION['message-warning'] = "File Should be 'pdf','png','jpg','jpeg','webp'";
       }
     }
   }
