@@ -11,6 +11,7 @@ if (isset($_SESSION['edit-category-data'])) {
 $category_id = $_SESSION['edit-category-data']['id'] ?? null;
 $category_name = $_SESSION['edit-category-data']['name'] ?? null;
 $category_title = $_SESSION['edit-category-data']['title'] ?? null;
+$category_slug = $_SESSION['edit-category-data']['slug'] ?? null;
 $parent_category_id = $_SESSION['edit-category-data']['parent_category_id'] ?? null;
 $navbar_status = $_SESSION['edit-category-data']['navbar_status'] ?? ($_SESSION['add-category-data']['navbar_status'] ?? null) === 'on' ? '1' : '0';
 $logo_name = $_SESSION['edit-category-data']['logo'] ?? null;
@@ -19,6 +20,7 @@ unset($_SESSION['edit-category-data']);
 if (isset($_SESSION['add-category-data'])) {
   $category_name = $_SESSION['add-category-data']['name'] ?? null;
   $category_title = $_SESSION['add-category-data']['title'] ?? null;
+  $category_slug = $_SESSION['add-category-data']['slug'] ?? null;
   $parent_category_id = $_SESSION['add-category-data']['parent_category_id'] ?? null;
   $navbar_status = ($_SESSION['add-category-data']['navbar_status'] ?? null) === 'on' ? '1' : '0';
   unset($_SESSION['add-category-data']);
@@ -39,8 +41,7 @@ unset($_SESSION['del-category-data']);
 
 <?php include('includes/message.php') ?>
 
-<section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md">
-
+<section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-5 rounded-md">
 
   <div>
     <h1 class=" text-[2rem] text-dark/75  font-semibold">Categories</h1>
@@ -117,10 +118,17 @@ unset($_SESSION['del-category-data']);
           </div>
         </div>
 
-        <div class="flex flex-col w-full">
-          <label>Category title</label>
-          <input type="text" name="title" value="<?= $category_title ?>" placeholder="e.g: E-Learning">
+        <div class="flex gap-1.5">
+          <div class="flex flex-col w-full">
+            <label>Category title</label>
+            <input type="text" name="title" value="<?= $category_title ?>" placeholder="e.g: E-Learning">
+          </div>
+          <div class="flex flex-col w-full">
+            <label>Slug(URL)</label>
+            <input type="text" name="slug" value="<?= $category_slug ?>" placeholder="e.g: espace-etudiant-el">
+          </div>
         </div>
+
         <div class="flex flex-col w-full">
           <label>Category logo</label>
           <?php if ($editing) : ?>
@@ -162,7 +170,7 @@ unset($_SESSION['del-category-data']);
     </form>
   </div>
 
-  <div id="table-wrapper" class="">
+  <div id="table-wrapper">
     <table id="myDataTable">
       <thead>
         <tr>

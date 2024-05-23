@@ -9,12 +9,15 @@ if (isset($_POST['add_category_btn'])) {
   $category_name = mysqli_real_escape_string($con, $_POST['name']);
   $parent_category_id = mysqli_real_escape_string($con, $_POST['parent_category_id']);
   $category_title = mysqli_real_escape_string($con, $_POST['title']);
+  $category_slug = mysqli_real_escape_string($con, $_POST['slug']);
   $file_info = $_FILES['category_logo'];
   $file_name = mysqli_real_escape_string($con, $_FILES['category_logo']['name']);
   $navbar_status = mysqli_real_escape_string($con, $_POST['navbar_status'] ?? null) == 'on' ? '1' : '0';
 
   if (!$category_name) {
     $_SESSION['message-warning'] = 'Please enter the category name';
+  } elseif (!$category_title) {
+    $_SESSION['message-warning'] = 'Please enter the category title';
   } else {
 
     // Work on Logo
@@ -48,8 +51,8 @@ if (isset($_POST['add_category_btn'])) {
     header('Location: ../category-view.php');
     exit();
   } else {
-    $add_cat_query = "INSERT INTO categories (parent_category_id,name,title,logo,navbar_status) 
-      VALUES ('$parent_category_id','$category_name','$category_title','$file_to_upload','$navbar_status') LIMIT 1";
+    $add_cat_query = "INSERT INTO categories (parent_category_id,name,title,slug,logo,navbar_status) 
+      VALUES ('$parent_category_id','$category_name','$category_title','$category_slug','$file_to_upload','$navbar_status') LIMIT 1";
     $add_cat_result = mysqli_query($con, $add_cat_query);
 
     if ($add_cat_result) {
@@ -66,7 +69,7 @@ if (isset($_POST['add_category_btn'])) {
   // Get Category data to edit
   $category_id = mysqli_real_escape_string($con, $_POST['get_cat_data_btn']);
 
-  $cat_query = "SELECT id,name,title,logo,parent_category_id,navbar_status 
+  $cat_query = "SELECT id,name,title,slug,logo,parent_category_id,navbar_status 
   FROM categories 
   WHERE id = $category_id LIMIT 1";
   $cat_result = mysqli_query($con, $cat_query);
@@ -87,6 +90,7 @@ if (isset($_POST['add_category_btn'])) {
   $category_id = mysqli_real_escape_string($con, $_POST['id']);
   $category_name = mysqli_real_escape_string($con, $_POST['name']);
   $category_title = mysqli_real_escape_string($con, $_POST['title']);
+  $category_slug = mysqli_real_escape_string($con, $_POST['slug']);
   $parent_category_id = mysqli_real_escape_string($con, $_POST['parent_category_id']);
   $file_old_name = mysqli_real_escape_string($con, $_POST['old_cat_logo_name']);
   $file_name = mysqli_real_escape_string($con, $_FILES['category_logo']['name']);
@@ -95,6 +99,8 @@ if (isset($_POST['add_category_btn'])) {
 
   if (!$category_name) {
     $_SESSION['message-warning'] = 'Please enter the category name';
+  } elseif (!$category_title) {
+    $_SESSION['message-warning'] = 'Please enter the category title';
   } else {
 
     // Check file status
@@ -125,7 +131,7 @@ if (isset($_POST['add_category_btn'])) {
     exit();
   } else {
     $update_cat_query = "UPDATE categories 
-      SET parent_category_id = '$parent_category_id', name = '$category_name',title = '$category_title', logo = '$file_to_upload', navbar_status = '$navbar_status' WHERE id = '$category_id' LIMIT 1";
+      SET parent_category_id = '$parent_category_id', name = '$category_name',title = '$category_title', slug = '$category_slug', logo = '$file_to_upload', navbar_status = '$navbar_status' WHERE id = '$category_id' LIMIT 1";
 
     $update_cat_result = mysqli_query($con, $update_cat_query);
 
