@@ -24,6 +24,7 @@ $category_id = $item_data['category_id'] ?? null;
 $name = $item_data['name'] ?? null;
 $title = $item_data['title'] ?? null;
 $slug = $item_data['slug'] ?? null;
+$logo_old_name = $item_data['logo'] ?? null;
 $data_content = json_decode($item_data['data_content']) ?? null;
 $meta_title = $item_data['meta_title'] ?? null;
 $file_old_name = $item_data['file'] ?? null;
@@ -80,16 +81,13 @@ if (isset($_SESSION['edit_item_data'])) {
     <form action="controller/item-code.php" enctype="multipart/form-data" method="post" class="w-full h-full">
 
       <div class="px-7 text-[.9rem] flex flex-col gap-5">
-        <div class="flex flex-col w-full">
-          <label class="font-bold">Item Name:</label>
-          <input type="text" name="name" value="<?= $name ?>" placeholder="e.g: informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
-        </div>
         <div class="flex flex-col">
-          <label class="font-bold">Item title:</label>
+          <label class="font-bold">Item Name:</label>
           <div class="flex sm:flex-col gap-2">
             <input type="hidden" name="item_id" value="<?= $item_id ?>">
-            <input type="text" name="title" value="<?= $title ?>" placeholder="e.g: Informatique" class=" p-3 outline-none text-[.9rem] rounded-md">
-            <select name="category_id">
+
+            <input type="text" name="name" value="<?= $name ?>" placeholder="e.g: informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+            <select name="category_id" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
               <option value="">No category</option>
               <?php
               $category_query = "SELECT * FROM categories WHERE status != '2'";
@@ -106,8 +104,13 @@ if (isset($_SESSION['edit_item_data'])) {
 
             </select>
           </div>
-
         </div>
+
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Item title:</label>
+          <input type="text" name="title" value="<?= $title ?>" placeholder="e.g: Informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+        </div>
+
         <div class="flex sm:flex-col gap-2">
           <div class="flex flex-col w-full">
             <label class="font-bold">Slug(URL):</label>
@@ -118,6 +121,13 @@ if (isset($_SESSION['edit_item_data'])) {
             <input type="text" name="meta_title" value="<?= $meta_title ?>" placeholder="e.g: Informatique | Est-Fes" class="shadow-md p-3 outline-none rounded-md">
           </div>
         </div>
+
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Item logo:</label>
+          <input type="hidden" name="logo_old_name" value="<?= $logo_old_name ?>">
+          <input type="file" name="logo" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+        </div>
+
         <div class="mt-2 flex flex-col gap-2">
           <h2 class="text-center -mb-2 text-lg font-semibold ">Page Content</h2>
           <div id="item_content_list" class="border-b-2 border-t-2 py-1 pb-2 flex flex-col gap-2">

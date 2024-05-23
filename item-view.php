@@ -10,6 +10,7 @@ if (isset($_SESSION['del-item-data'])) {
 $del_item_id = $_SESSION['del-item-data']['id'] ?? null;
 $del_item_title = $_SESSION['del-item-data']['title'] ?? null;
 $del_item_file_name = $_SESSION['del-item-data']['file'] ?? null;
+$del_item_logo_name = $_SESSION['del-item-data']['logo'] ?? null;
 
 unset($_SESSION['del-item-data']);
 
@@ -48,6 +49,7 @@ unset($_SESSION['del-item-data']);
         </button>
         <form action="controller/item-code.php" method="post">
           <input type="hidden" value="<?= $del_item_file_name ?>" name="delete_item_file_name">
+          <input type="hidden" value="<?= $del_item_logo_name ?>" name="delete_item_logo_name">
           <button name="delete_item_btn" value="<?= $del_item_id ?>" class="btn-red">
             Yes
           </button>

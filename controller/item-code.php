@@ -11,6 +11,8 @@ if (isset($_POST['add_item_btn'])) {
   $category_id = mysqli_real_escape_string($con, $_POST['category_id']);
   $slug = mysqli_real_escape_string($con, $_POST['slug']);
   $meta_title = mysqli_real_escape_string($con, $_POST['meta_title']);
+  $logo_info = $_FILES['logo'];
+  $logo_name = mysqli_real_escape_string($con, $_FILES['logo']['name']);
   $data_content_title = $_POST['data_content_title'];
   $data_content_desc = $_POST['data_content_desc'];
   $status = mysqli_real_escape_string($con, $_POST['status'] ?? null) == 'on' ? '1' : '0';
@@ -47,6 +49,30 @@ if (isset($_POST['add_item_btn'])) {
     $data_content_json = json_encode($data_content);
     $escaped_data_content_json = addslashes($data_content_json);
 
+    // Work on Logo
+    if ($logo_name == null || $logo_name == '') {
+      $logo_to_upload = '';
+    } else {
+      $allowed_files = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'svg'];
+      $logo_extention = pathinfo($logo_name, PATHINFO_EXTENSION);
+
+      if (in_array($logo_extention, $allowed_files)) {
+        if ($logo_info['size'] <= 1000000) {
+          $time = time();
+          $logo_to_upload = $time . $logo_name;
+          $logo_destination_path = '../uploads/items/' . $logo_to_upload;
+
+          if ((move_uploaded_file($logo_info["tmp_name"], $logo_destination_path)) == false) {
+            $_SESSION['message-warning'] = "Sommething went wrong on uploading Logo";
+          }
+        } else {
+          $_SESSION['message-warning'] = "Logo size too big. Should be less than 1Mb";
+        }
+      } else {
+        $_SESSION['message-warning'] = "Logo Should be 'png','jpg','jpeg','webp','avif','svg'";
+      }
+    }
+
     // Work on File
     if ($file_name == null || $file_name == '') {
       $file_to_upload = '';
@@ -79,8 +105,8 @@ if (isset($_POST['add_item_btn'])) {
     exit();
   } else {
     $item_query = "INSERT INTO items 
-      (category_id,name,title,slug,data_content,meta_title,file,status) 
-      VALUES ('$category_id','$name','$title','$slug','$escaped_data_content_json','$meta_title','$file_to_upload','$status') LIMIT 1";
+      (category_id,name,title,slug,logo,data_content,meta_title,file,status) 
+      VALUES ('$category_id','$name','$title','$slug','$logo_to_upload','$escaped_data_content_json','$meta_title','$file_to_upload','$status') LIMIT 1";
 
     $item_result = mysqli_query($con, $item_query);
 
@@ -102,6 +128,9 @@ if (isset($_POST['add_item_btn'])) {
   $title = mysqli_real_escape_string($con, $_POST['title']);
   $category_id = mysqli_real_escape_string($con, $_POST['category_id']);
   $slug = mysqli_real_escape_string($con, $_POST['slug']);
+  $logo_old_name = mysqli_real_escape_string($con, $_POST['logo_old_name']);
+  $logo_name = mysqli_real_escape_string($con, $_FILES['logo']['name']);
+  $logo_info = $_FILES['logo'];
   $meta_title = mysqli_real_escape_string($con, $_POST['meta_title']);
   $data_content_title = $_POST['data_content_title'];
   $data_content_desc = $_POST['data_content_desc'];
@@ -140,6 +169,26 @@ if (isset($_POST['add_item_btn'])) {
     $data_content_json = json_encode($data_content);
     $escaped_data_content_json = addslashes($data_content_json);
 
+    // Check logo status
+    if ($logo_name == null || $logo_name == '') {
+      $logo_to_upload = $logo_old_name;
+    } else {
+      $allowed_logo = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'svg'];
+      $logo_extention = pathinfo($logo_name, PATHINFO_EXTENSION);
+
+      if (in_array($logo_extention, $allowed_logo)) {
+        if ($logo_info['size'] <= 1000000) {
+          $time = time();
+          $logo_to_upload = $time . $logo_name;
+          $logo_destination_path = '../uploads/items/' . $logo_to_upload;
+        } else {
+          $_SESSION['message-warning'] = "Logo size too big. Should be less than 1Mb";
+        }
+      } else {
+        $_SESSION['message-warning'] = "Logo Should be 'png','jpg','jpeg','webp','avif','svg'";
+      }
+    }
+
     // Check file status
     if ($file_name == null || $file_name == '') {
       $file_to_upload = $file_old_name;
@@ -168,11 +217,28 @@ if (isset($_POST['add_item_btn'])) {
     header('Location: ../item-edit.php?id=' . $item_id);
     exit();
   } else {
-    $item_query = "UPDATE items SET category_id = '$category_id', name = '$name', title = '$title', slug = '$slug',data_content = '$escaped_data_content_json', meta_title = '$meta_title', file = '$file_to_upload', status = '$status' WHERE id = '$item_id' LIMIT 1";
+    $item_query = "UPDATE items SET category_id = '$category_id', name = '$name', title = '$title', slug = '$slug', logo = '$logo_to_upload', data_content = '$escaped_data_content_json', meta_title = '$meta_title', file = '$file_to_upload', status = '$status' WHERE id = '$item_id' LIMIT 1";
 
     $item_result = mysqli_query($con, $item_query);
 
     if ($item_result) {
+      // Unlink old logo
+      if ($logo_name != null || $logo_name != '') {
+        $logo_old_destination_path = '../uploads/items/' . $logo_old_name;
+
+        if (file_exists($logo_old_destination_path)) {
+          unlink($logo_old_destination_path);
+        }
+
+        if ((move_uploaded_file($logo_info["tmp_name"], $logo_destination_path)) == false) {
+          $_SESSION['message-warning'] = "Sommething went wrong on uploading Logo";
+          $_SESSION['edit_item_data'] = $_POST;
+          header('Location: ../item-edit.php?id=' . $item_id);
+          exit();
+        }
+      }
+
+      // Unlink old file
       if ($file_name != null || $file_name != '') {
         $file_old_destination_path = '../uploads/files/' . $file_old_name;
 
@@ -202,7 +268,7 @@ if (isset($_POST['add_item_btn'])) {
   // Get item to confirm delete
   $item_id = mysqli_real_escape_string($con, $_POST['confirm_del_item_btn']);
 
-  $item_query = "SELECT id,title,file FROM items WHERE id = $item_id LIMIT 1";
+  $item_query = "SELECT id,title,file,logo FROM items WHERE id = $item_id LIMIT 1";
   $item_result = mysqli_query($con, $item_query);
 
   if (mysqli_num_rows($item_result) > 0) {
@@ -219,14 +285,22 @@ if (isset($_POST['add_item_btn'])) {
 } elseif (isset($_POST['delete_item_btn'])) {
   // Delete item
   $item_id = mysqli_real_escape_string($con, $_POST['delete_item_btn']);
-  $del_item_file_name = mysqli_real_escape_string($con, $_POST['delete_item_file_name']);
+  $del_item_file = mysqli_real_escape_string($con, $_POST['delete_item_file_name']);
+  $del_item_logo = mysqli_real_escape_string($con, $_POST['delete_item_logo_name']);
 
   $delete_item_query = "DELETE FROM items WHERE id = '$item_id' LIMIT 1";
 
   $delete_item_result = mysqli_query($con, $delete_item_query);
 
   if ($delete_item_result) {
-    $file_old_destination_path = '../uploads/files/' . $del_item_file_name;
+    // Unlink logo
+    $logo_old_destination_path = '../uploads/items/' . $del_item_logo;
+    if (file_exists($logo_old_destination_path)) {
+      unlink($logo_old_destination_path);
+    }
+
+    // Unlink file
+    $file_old_destination_path = '../uploads/files/' . $del_item_file;
     if (file_exists($file_old_destination_path)) {
       unlink($file_old_destination_path);
     }

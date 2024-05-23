@@ -43,15 +43,11 @@ unset($_SESSION['add_item_data']);
     <form action="controller/item-code.php" method="post" enctype="multipart/form-data" class="w-full h-full">
 
       <div class="px-7 text-[.9rem] flex flex-col gap-5">
-        <div class="flex flex-col w-full">
-          <label class="font-bold">Item Name:</label>
-          <input type="text" name="name" value="<?= $name ?>" placeholder="e.g: informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
-        </div>
         <div class="flex flex-col">
-          <label class="font-bold">Item title:</label>
+          <label class="font-bold">Item Name:</label>
           <div class="flex sm:flex-col gap-2">
-            <input type="text" name="title" value="<?= $title ?>" placeholder="e.g: Informatique" class=" p-3 outline-none text-[.9rem] rounded-md">
-            <select name="category_id">
+            <input type="text" name="name" value="<?= $name ?>" placeholder="e.g: informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+            <select name="category_id" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
               <option value="">No category</option>
               <?php
               $category_query = "SELECT * FROM categories WHERE status != '2'";
@@ -65,11 +61,15 @@ unset($_SESSION['add_item_data']);
               <?php
               }
               ?>
-
             </select>
           </div>
-
         </div>
+
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Item title:</label>
+          <input type="text" name="title" value="<?= $title ?>" placeholder="e.g: Informatique" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
+        </div>
+
         <div class="flex sm:flex-col gap-2">
           <div class="flex flex-col w-full">
             <label class="font-bold">Slug(URL):</label>
@@ -79,6 +79,11 @@ unset($_SESSION['add_item_data']);
             <label class="font-bold">Meta Title:</label>
             <input type="text" name="meta_title" value="<?= $meta_title ?>" placeholder="e.g: Informatique | Est-Fes" class="shadow-md p-3 outline-none rounded-md">
           </div>
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Item logo:</label>
+          <input type="file" name="logo" class="shadow-md p-3 outline-none text-[.9rem] rounded-md">
         </div>
 
         <div class="mt-2 flex flex-col gap-2">
