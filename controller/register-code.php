@@ -45,7 +45,7 @@ if (isset($_POST['register_btn'])) {
         if ($avatar_name === null || $avatar_name === '') {
           $avatar_to_upload = '';
         } else {
-          $allowed_files = ['png', 'jpg', 'jpeg', 'webp'];
+          $allowed_files = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'svg'];
           $avatar_extention = pathinfo($avatar_name, PATHINFO_EXTENSION);
 
           if (in_array($avatar_extention, $allowed_files)) {
@@ -61,7 +61,7 @@ if (isset($_POST['register_btn'])) {
               $_SESSION['message-warning'] = "File size too big. Should be less than 1Mb";
             }
           } else {
-            $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg','webp'";
+            $_SESSION['message-warning'] = "File Should be 'png','jpg','jpeg','webp','avif','svg'";
           }
         }
       } else {
