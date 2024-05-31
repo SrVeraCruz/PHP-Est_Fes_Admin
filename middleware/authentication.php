@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include('config/db.php');
+// include('config/db.php');
 
 if (isset($_SESSION['auth'])) {
   if ($_SESSION['auth_role'] === '0') {

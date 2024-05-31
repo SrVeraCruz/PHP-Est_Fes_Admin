@@ -1,6 +1,6 @@
 <?php
-require 'middleware/authentication.php';
-require 'includes/header.php';
+require_once 'middleware/authentication.php';
+require_once 'includes/header.php';
 ?>
 
 <section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-4 rounded-md">
@@ -19,5 +19,5 @@ require 'includes/header.php';
 </section>
 
 <?php
-require 'includes/footer.php';
+require_once 'includes/footer.php';
 ?>

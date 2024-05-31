@@ -126,7 +126,7 @@ input, textarea, select {
     #item {
       @apply flex flex-col gap-2 p-2 shadow-sm rounded-md relative;
 
-      button#delItem {
+      button#removeContentItemBtn {
         @apply absolute right-2 top-4;
 
         span {

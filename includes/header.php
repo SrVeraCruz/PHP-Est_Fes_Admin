@@ -18,7 +18,12 @@
 
   <!-- Data table Css Link -->
   <link rel="stylesheet" href="./assets/css/dataTables.dataTables.min.css">
-  <!-- //Data table Css Link -->
+  <!-- Data table Css Link -->
+
+  <!-- Axios Link -->
+  <script src="./assets/js/axios.min.js"></script>
+  <!-- Axios Link -->
+
 
 </head>
 

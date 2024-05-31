@@ -34,9 +34,7 @@ module.exports = {
       indigo: colors.indigo, 
       yellow: colors.yellow,  
       sky: colors.sky, 
-      neutral: colors.neutral, 
       gray: colors.gray,  
-      rose: colors.rose,
     },
     screens: {
       "2xl" : {max: "1535px"},
