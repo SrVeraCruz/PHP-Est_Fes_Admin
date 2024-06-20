@@ -1,5 +1,5 @@
 /* Global Variables */ 
-const baseUrl = 'http://localhost/EST_FES_SITE-Refactored/admin_est-usmba.ac.ma/';
+const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
 const endpointLogin = `${baseUrl}api/users/login`;
 const endpointLogout = `${baseUrl}api/users/logout`;
 const endpointRegister = `${baseUrl}api/users/register`;
@@ -231,6 +231,20 @@ const addSummernote = () => {
     ]
   });
 }
+
+const toastrAlert = (err) => {
+  if (err.response && err.response.data) {
+    if (err.response.data.message_warning) {
+      toastr.warning(err.response.data.message_warning)
+    } else if (err.response.data.message_error) {
+      toastr.error(err.response.data.message_error)
+    } else {
+      toastr.error('Something went wrong!');
+    }
+  } else {
+    toastr.error('Something went wrong!');
+  }
+}
  
 if(cancelDeleteBtn && sideOutDelete) {
   cancelDeleteBtn.onclick = () => {
@@ -270,11 +284,7 @@ if(pageName === 'register.php') {
     ).then(res => {
       window.location.href = "login.php";
     }).catch(err => {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     })
   }
 }
@@ -296,11 +306,7 @@ if(pageName === 'login.php') {
     .then(res => {
       window.location.href = "index.php";
     }).catch(err => {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     })
   }
 }
@@ -318,7 +324,7 @@ if(logoutForm) {
         location.href = 'login.php'
       })
       .catch(err => {
-        console.error(err.message)
+        toastrAlert(err)
       })
   }
  }
@@ -456,7 +462,7 @@ if(pageName === 'user-view.php') {
       location.reload();
     })
     .catch(err => {
-      console.error(err.message)
+      toastrAlert(err)
     })
   }
 }
@@ -488,14 +494,9 @@ if(pageName === 'user-add.php') {
         }
       }
     ).then(res => {
-      console.log(res.data)
       window.location.href = "user-view.php";
     }).catch(err => {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     })
   }
 }
@@ -557,13 +558,8 @@ if(pageName === 'user-edit.php') {
         window.location.href = "user-view.php";
       })
     } catch (err) {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     }
-    
   }
   
   fetchOneUser(user_id).then(user => {
@@ -650,11 +646,7 @@ if(pageName === 'category-view.php') {
       formCat.reset()
       fetchAllCats();
     }).catch(err => {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     })
   }
 
@@ -720,11 +712,7 @@ if(pageName === 'category-view.php') {
         // fetchAllCats();
         location.reload()
       }).catch(err => {
-        if (err.response && err.response.data.message) {
-          alert(err.response.data.message)
-        } else {
-          console.error(err.message)
-        }
+        toastrAlert(err)
       })
     }
   }
@@ -756,7 +744,7 @@ if(pageName === 'category-view.php') {
         location.reload();
       })
       .catch(err => {
-        console.error(err.message)
+        toastrAlert(err)
       })
   }
 }
@@ -847,7 +835,7 @@ if(pageName === 'item-view.php') {
         location.reload();
       })
       .catch(err => {
-        console.error(err.message)
+        toastrAlert(err)
       })
   }
 
@@ -887,11 +875,7 @@ if(pageName === 'item-add.php') {
     ).then(res => {
       window.location.href = "item-view.php";
     }).catch(err => {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
-      }
+      toastrAlert(err)
     })
   }
 
@@ -956,24 +940,18 @@ if(pageName === 'item-edit.php') {
     formData.append('file_old_name', event.target.file_old_name.value)
     formData.append('file', event.target.file.files[0])
 
-    try {
-      await axios.post(
-        endpointItems,
-        formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+    await axios.post(
+      endpointItems,
+      formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      ).then(res => {
-        window.location.href = "item-view.php";
-      })
-    } catch (err) {
-      if (err.response && err.response.data.message) {
-        alert(err.response.data.message)
-      } else {
-        console.error(err.message)
       }
-    }
+    ).then(res => {
+      window.location.href = "item-view.php";
+    }).catch(err => {
+      toastrAlert(err)
+    })
   }
 
   fetchAllCats().then(cats => {

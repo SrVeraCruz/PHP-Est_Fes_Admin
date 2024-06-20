@@ -5,8 +5,6 @@ require_once 'includes/header.php';
 
 <section class=" flex flex-col items-center justify-center w-full h-full px-16 sm:px-8">
 
-  <?php require_once 'includes/message.php' ?>
-
   <div class="bg-white shadow-xl sm:m-4 p-2 pb-5 rounded-md text-softDark flex w-full max-w-[30rem]">
 
     <form id="formUserRegister" class="m-6 sm:m-2 sm:mx-4 mx-8 w-full h-full">

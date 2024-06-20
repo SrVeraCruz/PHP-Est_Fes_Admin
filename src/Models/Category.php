@@ -63,10 +63,10 @@ class Category
 
     if (!trim($data['name'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the category name']);
+      return json_encode(['message_warning' => 'Please enter the category name']);
     } elseif (!trim($data['title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the category title']);
+      return json_encode(['message_warning' => 'Please enter the category title']);
     } else {
 
       // Work on Logo
@@ -83,15 +83,15 @@ class Category
 
               if ((move_uploaded_file($file['logo']["tmp_name"], $file_destination_path)) == false) {
                 http_response_code(400);
-                return json_encode(['message' => "Sommething went wrong on uploading Logo"]);
+                return json_encode(['message_warning' => "Sommething went wrong on uploading Logo"]);
               }
             } else {
               http_response_code(400);
-              return json_encode(['message' => "File size too big. Should be less than 1Mb"]);
+              return json_encode(['message_warning' => "File size too big. Should be less than 1Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "File Should be 'png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "File Should be 'png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -110,7 +110,7 @@ class Category
 
       if ($success) {
         http_response_code(200);
-        return json_encode(['message' => 'Category added successfully']);
+        return json_encode(['message_success' => 'Category added successfully']);
       } else {
         throw new Exception('Sommething went wrong');
       }
@@ -124,10 +124,10 @@ class Category
 
     if (!trim($data['name'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the category name']);
+      return json_encode(['message_warning' => 'Please enter the category name']);
     } elseif (!trim($data['title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the category title']);
+      return json_encode(['message_warning' => 'Please enter the category title']);
     } else {
 
       // Check file status
@@ -143,11 +143,11 @@ class Category
               $file_destination_path = self::$destination_path_upload . $file_to_upload;
             } else {
               http_response_code(400);
-              return json_encode(['message' => "File size too big. Should be less than 1Mb"]);
+              return json_encode(['message_warning' => "File size too big. Should be less than 1Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "File Should be 'png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "File Should be 'png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -176,13 +176,13 @@ class Category
 
             if ((move_uploaded_file($file['logo']["tmp_name"], $file_destination_path)) == false) {
               http_response_code(400);
-              return json_encode(['message' => "Sommething went wrong on uploading File"]);
+              return json_encode(['message_warning' => "Sommething went wrong on uploading File"]);
             }
           }
         }
 
         http_response_code(200);
-        return json_encode(['message' => 'Category updated successfully']);
+        return json_encode(['message_success' => 'Category updated successfully']);
       } else {
         throw new Exception('Sommething went wrong');
       }
@@ -208,7 +208,7 @@ class Category
       }
 
       http_response_code(200);
-      return json_encode(['message' => 'Category deleted successfully']);
+      return json_encode(['message_success' => 'Category deleted successfully']);
     } else {
       throw new Exception('Sommething went wrong');
     }

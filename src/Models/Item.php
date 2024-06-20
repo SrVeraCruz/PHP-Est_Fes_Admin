@@ -67,25 +67,25 @@ class Item
     // Inputs Verification
     if (!trim($data['name'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item name']);
+      return json_encode(['message_warning' => 'Please enter the item name']);
     } elseif (!trim($data['category_id'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item category']);
+      return json_encode(['message_warning' => 'Please enter the item category']);
     } elseif (!trim($data['title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item title']);
+      return json_encode(['message_warning' => 'Please enter the item title']);
     } elseif (!trim($data['slug'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the slug of the item']);
+      return json_encode(['message_warning' => 'Please enter the slug of the item']);
     } elseif (!trim($data['meta_title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item meta-title']);
+      return json_encode(['message_warning' => 'Please enter the item meta-title']);
     } elseif (!trim($cotent_data[0]->title)) {
       http_response_code(400);
-      return json_encode(['message' => 'The item need 1+ subtitle']);
+      return json_encode(['message_warning' => 'The item need 1+ subtitle']);
     } elseif (!trim($cotent_data[0]->description)) {
       http_response_code(400);
-      return json_encode(['message' => 'The item need 1+ description']);
+      return json_encode(['message_warning' => 'The item need 1+ description']);
     } else {
 
       // Work on Logo
@@ -102,15 +102,15 @@ class Item
 
               if ((move_uploaded_file($file['logo']["tmp_name"], $logo_destination_path)) == false) {
                 http_response_code(400);
-                return json_encode(['message' => "Sommething went wrong on uploading Logo"]);
+                return json_encode(['message_warning' => "Sommething went wrong on uploading Logo"]);
               }
             } else {
               http_response_code(400);
-              return json_encode(['message' => "Logo size too big. Should be less than 1Mb"]);
+              return json_encode(['message_warning' => "Logo size too big. Should be less than 1Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "Logo Should be 'png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "Logo Should be 'png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -129,15 +129,15 @@ class Item
 
               if ((move_uploaded_file($file['file']["tmp_name"], $file_destination_path)) == false) {
                 http_response_code(400);
-                return json_encode(['message' => "Sommething went wrong on uploading File"]);
+                return json_encode(['message_warning' => "Sommething went wrong on uploading File"]);
               }
             } else {
               http_response_code(400);
-              return json_encode(['message' => "File size too big. Should be less than 10Mb"]);
+              return json_encode(['message_warning' => "File size too big. Should be less than 10Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "File Should be 'pdf','png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "File Should be 'pdf','png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -161,7 +161,7 @@ class Item
 
       if ($success) {
         http_response_code(200);
-        return json_encode(['message' => 'Item added successfully']);
+        return json_encode(['message_success' => 'Item added successfully']);
       } else {
         throw new Exception('Sommething went wrong');
       }
@@ -176,25 +176,25 @@ class Item
 
     if (!trim($data['name'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item name']);
+      return json_encode(['message_warning' => 'Please enter the item name']);
     } elseif (!trim($data['category_id'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item category']);
+      return json_encode(['message_warning' => 'Please enter the item category']);
     } elseif (!trim($data['title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item title']);
+      return json_encode(['message_warning' => 'Please enter the item title']);
     } elseif (!trim($data['slug'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the slug of the item']);
+      return json_encode(['message_warning' => 'Please enter the slug of the item']);
     } elseif (!trim($data['meta_title'])) {
       http_response_code(400);
-      return json_encode(['message' => 'Please enter the item meta-title']);
+      return json_encode(['message_warning' => 'Please enter the item meta-title']);
     } elseif (!trim($cotent_data[0]->title)) {
       http_response_code(400);
-      return json_encode(['message' => 'The item need 1+ subtitle']);
+      return json_encode(['message_warning' => 'The item need 1+ subtitle']);
     } elseif (!trim($cotent_data[0]->description)) {
       http_response_code(400);
-      return json_encode(['message' => 'The item need 1+ description']);
+      return json_encode(['message_warning' => 'The item need 1+ description']);
     } else {
 
       // Check logo status
@@ -210,11 +210,11 @@ class Item
               $logo_destination_path = self::$upload_item_path . $logo_to_upload;
             } else {
               http_response_code(400);
-              return json_encode(['message' => "Logo size too big. Should be less than 1Mb"]);
+              return json_encode(['message_warning' => "Logo size too big. Should be less than 1Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "Logo Should be 'png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "Logo Should be 'png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -232,11 +232,11 @@ class Item
               $file_destination_path = self::$upload_file_path . $file_to_upload;
             } else {
               http_response_code(400);
-              return json_encode(['message' => "File size too big. Should be less than 10Mb"]);
+              return json_encode(['message_warning' => "File size too big. Should be less than 10Mb"]);
             }
           } else {
             http_response_code(400);
-            return json_encode(['message' => "File Should be 'pdf','png','jpg','jpeg','webp','avif','svg'"]);
+            return json_encode(['message_warning' => "File Should be 'pdf','png','jpg','jpeg','webp','avif','svg'"]);
           }
         }
       }
@@ -269,7 +269,7 @@ class Item
 
             if ((move_uploaded_file($file['logo']["tmp_name"], $logo_destination_path)) == false) {
               http_response_code(400);
-              return json_encode(['message' => "Sommething went wrong on uploading Logo"]);
+              return json_encode(['message_warning' => "Sommething went wrong on uploading Logo"]);
             }
           }
         }
@@ -285,13 +285,13 @@ class Item
 
             if ((move_uploaded_file($file['file']["tmp_name"], $file_destination_path)) == false) {
               http_response_code(400);
-              return json_encode(['message' => "Sommething went wrong on uploading File"]);
+              return json_encode(['message_warning' => "Sommething went wrong on uploading File"]);
             }
           }
         }
 
         http_response_code(200);
-        return json_encode(['message' => 'Item updated successfully']);
+        return json_encode(['message_success' => 'Item updated successfully']);
       } else {
         throw new Exception('Something went wrong');
       }
@@ -321,7 +321,7 @@ class Item
       }
 
       http_response_code(200);
-      return json_encode(['message' => 'Item deleted successfully']);
+      return json_encode(['message_success' => 'Item deleted successfully']);
     } else {
       throw new Exception('Sommething went wrong');
     }
