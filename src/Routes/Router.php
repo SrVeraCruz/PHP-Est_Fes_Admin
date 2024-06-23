@@ -1,6 +1,7 @@
 <?php
 require_once '../../vendor/autoload.php';
 require_once '../Services/UserServices.php';
+require_once '../Services/NewsServices.php';
 require_once '../Services/CategoryServices.php';
 require_once '../Services/ItemServices.php';
 
@@ -32,38 +33,26 @@ switch ($uri) {
     }
     break;
 
-  case 'api/users/register':
-    require_once '../../middleware/redirect-user.php';
-
-    if ($method === 'POST') {
-      json_encode(UserService::POST($_POST, $_FILES));
-    } else {
-      sendNotAllowed();
-    }
-    break;
-
-  case 'api/users/login':
-    require_once '../../middleware/redirect-user.php';
-
-    if ($method === 'POST') {
-      if (isset($_POST['email']) && isset($_POST['password'])) {
-        json_encode(UserService::LOGIN($_POST['email'], $_POST['password']));
+  case 'api/news':
+    if ($method === 'GET') {
+      if (isset($_GET['id'])) {
+        json_encode(NewsService::GET($_GET['id']));
       } else {
-        sendNotFound();
+        json_encode(NewsService::GET());
+      }
+    } elseif ($method === 'POST') {
+      if (isset($_POST['update_news_id'])) {
+        json_encode(NewsService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_news_id'])) {
+        json_encode(NewsService::DELETE($_POST));
+      } else {
+        json_encode(NewsService::POST($_POST));
       }
     } else {
       sendNotAllowed();
     }
     break;
-
-  case 'api/users/logout':
-    if ($method === 'POST') {
-      json_encode(UserService::LOGOUT());
-    } else {
-      sendNotAllowed();
-    }
-    break;
-
+    
   case 'api/categories':
     if ($method === 'GET') {
       if (isset($_GET['id'])) {
@@ -99,6 +88,38 @@ switch ($uri) {
       } else {
         json_encode(ItemService::POST($_POST, $_FILES));
       }
+    } else {
+      sendNotAllowed();
+    }
+    break;
+
+  case 'api/users/register':
+    require_once '../../middleware/redirect-user.php';
+
+    if ($method === 'POST') {
+      json_encode(UserService::POST($_POST, $_FILES));
+    } else {
+      sendNotAllowed();
+    }
+    break;
+
+  case 'api/users/login':
+    require_once '../../middleware/redirect-user.php';
+
+    if ($method === 'POST') {
+      if (isset($_POST['email']) && isset($_POST['password'])) {
+        json_encode(UserService::LOGIN($_POST['email'], $_POST['password']));
+      } else {
+        sendNotFound();
+      }
+    } else {
+      sendNotAllowed();
+    }
+    break;
+
+  case 'api/users/logout':
+    if ($method === 'POST') {
+      json_encode(UserService::LOGOUT());
     } else {
       sendNotAllowed();
     }

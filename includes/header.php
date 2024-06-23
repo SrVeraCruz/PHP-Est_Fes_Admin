@@ -13,7 +13,9 @@
 
   <!-- Summernote Css -->
   <!-- <link href="./assets/css/summernote-lite.min.css" rel="stylesheet"> -->
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+  <link 
+    href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet"
+  >
   <!-- Summernote Css -->
 
   <!-- Data table Css Link -->
@@ -35,12 +37,17 @@
 
 <body class="bg-bgGray max-w-[100vw]">
 
-  <?php
-
-  include('navbar.php');
-
-  ?>
+  <?php include('navbar.php') ?>
 
   <div class="flex w-full">
+
     <?php include('aside.php') ?>
-    <main class="p-4 md:ml-0 <?= isset($_SESSION['auth']) ? 'ml-[12.8925rem]' : '' ?> min-h-[calc(100vh-10.05rem)] w-full min-w-0">
+
+    <main 
+      class="p-4 md:ml-0 min-h-[calc(100vh-10.05rem)] w-full min-w-0 
+        <?= 
+          isset($_SESSION['auth']) 
+          ? 'ml-[12.8925rem]' : '' 
+        ?>
+      "
+      >

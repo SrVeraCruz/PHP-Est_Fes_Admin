@@ -4,8 +4,14 @@ const endpointLogin = `${baseUrl}api/users/login`;
 const endpointLogout = `${baseUrl}api/users/logout`;
 const endpointRegister = `${baseUrl}api/users/register`;
 const endpointUsers = `${baseUrl}api/users`;
+const endpointNews = `${baseUrl}api/news`;
 const endpointCategories = `${baseUrl}api/categories`;
 const endpointItems = `${baseUrl}api/items`;
+
+const endpointImageCld = 'https://api.cloudinary.com/v1_1/dbfaih2du/image/upload';
+const endpointRawCld = 'https://api.cloudinary.com/v1_1/dbfaih2du/raw/upload';
+
+const rawPathCld = "https://res-console.cloudinary.com/dbfaih2du/media_explorer_thumbnails/"
 
 const searchUrl = new URLSearchParams(window.location.search)
 const pageUrl = location.pathname
@@ -50,6 +56,26 @@ const fetchOneUser = async (id) => {
   .catch(err => {
     console.error(err.message)
   })
+}
+
+const fetchAllNews = async () => {
+  return await axios.get(endpointNews)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
+}
+
+const fetchOneNews = async (id) => {
+  return await axios.get(`${endpointNews}?id=${id}`)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
 }
 
 const fetchAllCats = async () => {
@@ -102,6 +128,21 @@ const fetchOneItem = async (id) => {
     .catch(err => {
       console.error(err.message)
     })
+}
+
+const handleUpload = async (file) => {
+  const data = new FormData()
+  data.append('file', file)
+  data.append('upload_preset', 'est_uploads_file')
+
+  if(file.type === 'application/pdf') {
+    const res = await axios.post(endpointRawCld ,data)
+    const fileUrl = `${rawPathCld + res.data.asset_id}/download`
+    return fileUrl
+  }
+
+  const res = await axios.post(endpointImageCld ,data)
+  return res.data.secure_url
 }
 
 const contentItemElement = (title,description) => {
@@ -206,6 +247,10 @@ const getItemDataContent = () => {
     })
   }
   return data_content
+}
+
+const getNewsDataContent = () => {
+  return document.getElementById('newsContent').value
 }
 
 const addDataTable = () => {
@@ -568,6 +613,211 @@ if(pageName === 'user-edit.php') {
 }
 
 
+/*  News Page */ 
+//////////////////////////////////////////////////////////
+
+//  News view 
+if(pageName === 'news-view.php') {
+  const tableNews = document.getElementById('tableNewsData')
+
+  const showNews = (news) => {
+    tableNews.innerHTML = ''
+
+    if (news) {
+      news.forEach(news => {
+        tableNews.innerHTML += `
+          <tr>
+            <td>${news.title}</td>
+            <td>${news.content}</td>
+            <td>${news.status === '1' ? 'visible' : 'hidden'}</td>
+            <td class="flex gap-1.5">
+              <a href="news-edit.php?id=${news.id}" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg>
+                edit
+              </a>
+  
+              <?php if ($_SESSION['auth_role'] === '2') : ?>
+                <button id="deleteBtn" value="${news.id}" class="btn-red">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                  delete
+                </button>
+              <?php endif ?>
+            </td>
+          </tr>
+        `
+      })
+      addDeleteElementEvent('item')
+
+    } else {
+      tableNews.innerHTML = `
+      <tr>
+        <td rowspan="4">No records...</td>
+      </tr>
+      `
+    }
+  }
+  
+  fetchAllNews().then(items => {
+    showNews(items)
+    addDataTable()
+  })
+  
+  // Delete News
+  const FormConfirmNewsDelete = document.getElementById("FormConfirmNewsDelete")
+
+  function handleDeleteItem(id) {
+    fetchOneNews(id).then(news => {
+      showNewsToDelete(news)
+    });
+  }
+
+  const showNewsToDelete = (news) => {
+    document.getElementById("confirmDelNewsTitle").innerText = news.title
+    document.getElementById("confirmDelNewsLogo").value = news.logo
+    document.getElementById("confirmDelNewsFile").value = news.file
+    document.getElementById("confirmDelNewsId").value = news.id
+  }
+
+  FormConfirmNewsDelete.onsubmit = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData()
+    formData.append("delete_news_id", event.target.delete_news_id.value)
+    formData.append("logo", event.target.delete_news_logo_name.value)
+    formData.append("file", event.target.delete_news_file_name.value)
+
+    await axios.post(endpointNews, formData)
+      .then(() => {
+        // unshowCancelDelete()
+        // fetchAllnews()
+        location.reload();
+      })
+      .catch(err => {
+        toastrAlert(err)
+      })
+  }
+}
+
+// Add News
+if(pageName === 'news-add.php') {
+  const formAddNews = document.getElementById('formAddNews')
+
+  formAddNews.onsubmit = async (event) => {
+    event.preventDefault();
+
+    let thumbnailUrl = ''
+    let fileUrl = ''
+
+    const thumb = event.target.thumbnail.files[0]
+    const file = event.target.file.files[0]
+
+    if(thumb) {
+      thumbnailUrl = await handleUpload(thumb)
+    }
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
+    const content = getNewsDataContent();
+
+    const formData = new FormData();
+    formData.append('title', event.target.title.value)
+    formData.append('slug', event.target.slug.value)
+    formData.append('meta_title', event.target.meta_title.value)
+    formData.append('thumbnail', thumbnailUrl)
+    formData.append('content', content)
+    formData.append('file', fileUrl)
+    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+
+    await axios.post(
+      endpointNews,
+      formData
+    ).then(() => {
+      window.location.href = "news-view.php";
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  addSummernote()
+}
+
+// Edit news
+if(pageName === 'news-edit.php') {
+  const news_id = searchUrl.get('id')
+
+  if (news_id === null || news_id === '') {
+    window.location.href = "news-view.php";
+  }
+
+  const formNewsUpdate = document.getElementById('formNewsUpdate')
+  const items = document.getElementById('items')
+  
+  const showNewsData = (news) => {
+    document.getElementById('title').value = news.title
+    document.getElementById('slug').value = news.slug
+    document.getElementById('old_thumbnail').value = news.thumbnail || ''
+    document.getElementById('meta_title').value = news.meta_title
+    document.getElementById('newsContent').textContent = news.slug
+    document.getElementById('old_file').value = news.file || ''
+    document.getElementById('status').checked = news.status === '1' ? true : false
+
+    toggleCheckboxValueEvent()
+
+    addSummernote()
+  }
+
+  formNewsUpdate.onsubmit = async (event) => {
+    event.preventDefault();
+
+    let thumbnailUrl =  event.target.old_thumbnail.value
+    let fileUrl = event.target.old_file.value
+
+    const thumb = event.target.thumbnail.files[0]
+    const file = event.target.file.files[0]
+
+    if(thumb) {
+      thumbnailUrl = await handleUpload(thumb)
+    }
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
+    const content = getNewsDataContent();
+
+    const formData = new FormData();
+    formData.append('update_news_id', news_id)
+    formData.append('title', event.target.title.value)
+    formData.append('slug', event.target.slug.value)
+    formData.append('meta_title', event.target.meta_title.value)
+    formData.append('thumbnail', thumbnailUrl)
+    formData.append('content', content)
+    formData.append('file', fileUrl)
+    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+
+    await axios.post(
+      endpointNews,
+      formData
+    ).then(() => {
+      window.location.href = "news-view.php";
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  
+  fetchOneNews(news_id).then(news => {
+    showNewsData(news)
+  })
+}
+
+
 /*  Categories Page */ 
 //////////////////////////////////////////////////////////
 if(pageName === 'category-view.php') {
@@ -581,7 +831,7 @@ if(pageName === 'category-view.php') {
     if (cats) {
       cats.forEach(cat => {
         tableCat.innerHTML += `
-        <tr">
+        <tr>
             <td>${cat.name}</td>
             <td>${cat.parent_name !== null ? cat.parent_name : ''}</td>
             <td>${cat.status === '1' ? 'visible' : 'hidden'}</td>
@@ -763,7 +1013,7 @@ if(pageName === 'item-view.php') {
     if (items) {
       items.forEach(item => {
         tableItem.innerHTML += `
-        <tr class="${item.role_as === '2' ? 'hidden' : ''}">
+        <tr>
             <td>${item.name}</td>
             <td>${item.title}</td>
             <td>${item.category_name}</td>

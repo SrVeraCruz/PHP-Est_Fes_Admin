@@ -1,20 +1,35 @@
   </main>
   </div>
 
-  <footer class="mt-auto sticky flex justify-between text-sm p-4 py-8 border-t-2">
+  <footer 
+    class="mt-auto sticky flex justify-between 
+      text-sm p-4 py-8 border-t-2
+    "
+  >
     <div>
-      <p class="text-dark/60">Copyright &COPY; Est Fes <span id="Date-copy">2024</span></p>
+      <p class="text-dark/60">
+        Copyright &COPY; Est Fes 
+        <span id="Date-copy">2024</span>
+      </p>
     </div>
     <div>
       <ul class="flex gap-1 text-blue-600 ">
-        <li><a href="#" class="underline">Privacy Policy</a></li>·
-        <li><a href="#" class="underline">Terms & Conditions</a></li>
+        <li>
+          <a href="#" class="underline">
+            Privacy Policy
+          </a>
+        </li>·
+        <li>
+          <a href="#" class="underline">
+            Terms & Conditions
+          </a>
+        </li>
       </ul>
     </div>
   </footer>
 
   <!-- jQuery Link -->
-  <script src="./assets/js/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="./assets/js/jquery-3.4.1.slim.min.js"></script>
   <!-- jQuery Link -->
 
   <!-- Summernote Js -->
@@ -23,11 +38,6 @@
 
   <!-- Datatable Js -->
   <script src="./assets/js/dataTables.min.js"></script>
-  <!-- <script>
-    jQuery(document).ready(function() {
-      jQuery('#myDataTable').DataTable();
-    });
-  </script> -->
   <!-- Datatable Js -->
 
   <!-- Toaster -->

@@ -3,8 +3,6 @@ require_once 'middleware/authentication.php';
 require_once 'includes/header.php';
 ?>
 
-<?php require_once 'includes/message.php' ?>
-
 <section class="bg-white shadow-md p-4 pb-8 flex flex-col gap-5 rounded-md">
 
   <div>
