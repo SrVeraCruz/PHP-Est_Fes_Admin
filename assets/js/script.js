@@ -1,10 +1,12 @@
 /* Global Variables */ 
 const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
+
 const endpointLogin = `${baseUrl}api/users/login`;
 const endpointLogout = `${baseUrl}api/users/logout`;
 const endpointRegister = `${baseUrl}api/users/register`;
 const endpointUsers = `${baseUrl}api/users`;
 const endpointNews = `${baseUrl}api/news`;
+const endpointEvent = `${baseUrl}api/events`;
 const endpointCategories = `${baseUrl}api/categories`;
 const endpointItems = `${baseUrl}api/items`;
 
@@ -70,6 +72,26 @@ const fetchAllNews = async () => {
 
 const fetchOneNews = async (id) => {
   return await axios.get(`${endpointNews}?id=${id}`)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
+}
+
+const fetchAllEvent = async () => {
+  return await axios.get(endpointEvent)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
+}
+
+const fetchOneEvent = async (id) => {
+  return await axios.get(`${endpointEvent}?id=${id}`)
     .then(res => {
       return res.data
     })
@@ -219,6 +241,12 @@ const addDeleteElementEvent = (name) => {
         case 'item':
           handleDeleteItem(btn.value)
           break
+        case 'news':
+          handleDeleteNews(btn.value)
+          break
+        case 'event':
+          handleDeleteEvent(btn.value)
+          break
         default:
           console.log('invalid delete event name')
           break
@@ -235,6 +263,16 @@ const toggleCheckboxValueEvent = () => {
   })
 }
 
+const formatSlug = (inputString = '') => {
+  const cleanedString = inputString
+  .toLowerCase()
+  .replace(/[^\w\s]/g, '')
+  .replace(/\s+/g, '-')
+  .replace(/-+/g, '-')
+
+  return cleanedString;
+}
+
 const getItemDataContent = () => {
   const data_content_title = document.querySelectorAll('input[name="data_content_title[]')
   const data_content_desc = document.querySelectorAll('textarea[name="data_content_desc[]')
@@ -249,8 +287,17 @@ const getItemDataContent = () => {
   return data_content
 }
 
-const getNewsDataContent = () => {
-  return document.getElementById('newsContent').value
+const getContentPage = () => {
+  return document.getElementById('contentPage').value
+}
+
+const getEventTimeInterval = () => {
+  const timeStart = document.getElementById("timeStart").value
+  const timeEnd = document.getElementById("timeEnd").value
+
+  const time = `${timeStart} - ${timeEnd}`
+
+  return time === ' - ' ? '' : time
 }
 
 const addDataTable = () => {
@@ -629,7 +676,7 @@ if(pageName === 'news-view.php') {
           <tr>
             <td>${news.title}</td>
             <td>${news.content}</td>
-            <td>${news.status === '1' ? 'visible' : 'hidden'}</td>
+            <td>${news.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <a href="news-edit.php?id=${news.id}" class="btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -650,7 +697,7 @@ if(pageName === 'news-view.php') {
           </tr>
         `
       })
-      addDeleteElementEvent('item')
+      addDeleteElementEvent('news')
 
     } else {
       tableNews.innerHTML = `
@@ -669,7 +716,7 @@ if(pageName === 'news-view.php') {
   // Delete News
   const FormConfirmNewsDelete = document.getElementById("FormConfirmNewsDelete")
 
-  function handleDeleteItem(id) {
+  function handleDeleteNews(id) {
     fetchOneNews(id).then(news => {
       showNewsToDelete(news)
     });
@@ -723,7 +770,7 @@ if(pageName === 'news-add.php') {
       fileUrl = await handleUpload(file)
     }
 
-    const content = getNewsDataContent();
+    const content = getContentPage();
 
     const formData = new FormData();
     formData.append('title', event.target.title.value)
@@ -756,14 +803,13 @@ if(pageName === 'news-edit.php') {
   }
 
   const formNewsUpdate = document.getElementById('formNewsUpdate')
-  const items = document.getElementById('items')
   
   const showNewsData = (news) => {
     document.getElementById('title').value = news.title
     document.getElementById('slug').value = news.slug
     document.getElementById('old_thumbnail').value = news.thumbnail || ''
     document.getElementById('meta_title').value = news.meta_title
-    document.getElementById('newsContent').textContent = news.slug
+    document.getElementById('newsContent').textContent = news.content
     document.getElementById('old_file').value = news.file || ''
     document.getElementById('status').checked = news.status === '1' ? true : false
 
@@ -789,7 +835,7 @@ if(pageName === 'news-edit.php') {
       fileUrl = await handleUpload(file)
     }
 
-    const content = getNewsDataContent();
+    const content = getContentPage();
 
     const formData = new FormData();
     formData.append('update_news_id', news_id)
@@ -818,6 +864,207 @@ if(pageName === 'news-edit.php') {
 }
 
 
+/*  Event Page */ 
+//////////////////////////////////////////////////////////
+
+//  Event view 
+if(pageName === 'event-view.php') {
+  const tableEvent = document.getElementById('tableEventData')
+
+  const showEvent = (event) => {
+    tableEvent.innerHTML = ''
+
+    if (event) {
+      event.forEach(event => {
+        tableEvent.innerHTML += `
+          <tr>
+            <td>${event.title}</td>
+            <td>${event.date}</td>
+            <td>${event.time}</td>
+            <td>${event.location}</td>
+            <td>${event.status === '0' ? 'visible' : 'hidden'}</td>
+            <td class="flex gap-1.5">
+              <a href="event-edit.php?id=${event.id}" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg>
+                edit
+              </a>
+  
+              <?php if ($_SESSION['auth_role'] === '2') : ?>
+                <button id="deleteBtn" value="${event.id}" class="btn-red">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                  delete
+                </button>
+              <?php endif ?>
+            </td>
+          </tr>
+        `
+      })
+      addDeleteElementEvent('event')
+
+    } else {
+      tableEvent.innerHTML = `
+      <tr>
+        <td rowspan="4">No records...</td>
+      </tr>
+      `
+    }
+  }
+  
+  fetchAllEvent().then(event => {
+    showEvent(event)
+    addDataTable()
+  })
+  
+  // Delete Event
+  const FormConfirmEventDelete = document.getElementById("FormConfirmEventDelete")
+
+  function handleDeleteEvent(id) {
+    fetchOneEvent(id).then(event => {
+      showEventToDelete(event)
+    });
+  }
+
+  const showEventToDelete = (event) => {
+    document.getElementById("confirmDelEventTitle").innerText = event.title
+    document.getElementById("confirmDelEventId").value = event.id
+  }
+
+  FormConfirmEventDelete.onsubmit = async (ev) => {
+    ev.preventDefault()
+
+    const formData = new FormData()
+    formData.append("delete_event_id", ev.target.delete_event_id.value)
+
+    await axios.post(endpointEvent, formData)
+      .then(() => {
+        // unshowCancelDelete()
+        // fetchAllnews()
+        location.reload();
+      })
+      .catch(err => {
+        toastrAlert(err)
+      })
+  }
+}
+
+
+// Add Event
+if(pageName === 'event-add.php') {
+  const formAddEvent = document.getElementById('formAddEvent')
+
+  formAddEvent.onsubmit = async (ev) => {
+    ev.preventDefault();
+
+    let fileUrl = ''
+    const file = ev.target.file.files[0]
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
+    const content = getContentPage();
+    const time = getEventTimeInterval()
+    const slug = formatSlug(ev.target.title.value)
+
+    const formData = new FormData();
+    formData.append('title', ev.target.title.value)
+    formData.append('slug', slug)
+    formData.append('meta_title', ev.target.meta_title.value)
+    formData.append('date', ev.target.date.value)
+    formData.append('location', ev.target.location.value)
+    formData.append('time', time)
+    formData.append('content', content)
+    formData.append('file', fileUrl)
+    formData.append('status', ev.target.status.checked === true ? '1' : '0')
+
+    await axios.post(
+      endpointEvent,
+      formData
+    ).then(() => {
+      window.location.href = "event-view.php";
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  addSummernote()
+}
+
+// Edit Event
+if(pageName === 'event-edit.php') {
+  const event_id = searchUrl.get('id')
+
+  if (event_id === null || event_id === '') {
+    window.location.href = "event-view.php";
+  }
+
+  const formUpdateEvent = document.getElementById('formUpdateEvent')
+
+  const showEventData = (event) => {
+    const time = event.time.split(' - ')
+
+    document.getElementById('title').value = event.title
+    document.getElementById('metaTitle').value = event.meta_title
+    document.getElementById('date').value = event.date
+    document.getElementById('location').value = event.location
+    document.getElementById('timeStart').value = time[0]
+    document.getElementById('timeEnd').value = time[1]
+    document.getElementById('contentPage').textContent = event.content
+    document.getElementById('oldFile').value = event.file || ''
+    document.getElementById('status').checked = event.status === '1' ? true : false
+
+    toggleCheckboxValueEvent()
+
+    addSummernote()
+  }
+
+  formUpdateEvent.onsubmit = async (ev) => {
+    ev.preventDefault();
+
+    let fileUrl = ev.target.old_file.value
+    const file = ev.target.file.files[0]
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
+    const content = getContentPage();
+    const time = getEventTimeInterval()
+    const slug = formatSlug(ev.target.title.value)
+
+    const formData = new FormData();
+    formData.append('update_event_id', event_id)
+    formData.append('title', ev.target.title.value)
+    formData.append('slug', slug)
+    formData.append('meta_title', ev.target.meta_title.value)
+    formData.append('date', ev.target.date.value)
+    formData.append('location', ev.target.location.value)
+    formData.append('time', time)
+    formData.append('content', content)
+    formData.append('file', fileUrl)
+    formData.append('status', ev.target.status.checked === true ? '1' : '0')
+
+
+    await axios.post(
+      endpointEvent,
+      formData
+    ).then(() => {
+      window.location.href = "event-view.php";
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  fetchOneEvent(event_id).then(event => {
+    showEventData(event)
+  })
+}
+
+
 /*  Categories Page */ 
 //////////////////////////////////////////////////////////
 if(pageName === 'category-view.php') {
@@ -834,7 +1081,7 @@ if(pageName === 'category-view.php') {
         <tr>
             <td>${cat.name}</td>
             <td>${cat.parent_name !== null ? cat.parent_name : ''}</td>
-            <td>${cat.status === '1' ? 'visible' : 'hidden'}</td>
+            <td>${cat.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <button id="editCatBtn" value="${cat.id}" class="btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -1017,7 +1264,7 @@ if(pageName === 'item-view.php') {
             <td>${item.name}</td>
             <td>${item.title}</td>
             <td>${item.category_name}</td>
-            <td>${item.status === '1' ? 'visible' : 'hidden'}</td>
+            <td>${item.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <a href="item-edit.php?id=${item.id}" class="btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

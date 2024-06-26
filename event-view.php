@@ -9,13 +9,13 @@ require_once 'includes/header.php';
   "
 >
   <div>
-    <h1 class=" text-[2rem] text-dark/75  font-semibold">News</h1>
+    <h1 class=" text-[2rem] text-dark/75  font-semibold">Events</h1>
     <ul id="pageIndicator" class=" text-dark/65 flex gap-1">
       <li>
         <a href="index.php">Dashboard</a>
       </li>/
       <li>
-        <a href="#">News</a>
+        <a href="#">Event</a>
       </li>/
     </ul>
   </div>
@@ -32,12 +32,12 @@ require_once 'includes/header.php';
   >
 
     <h2>
-      Do you want to delete the news
+      Do you want to delete the event
       <span 
-        id="confirmDelNewsTitle" 
+        id="confirmDelEventTitle" 
         class="font-semibold"
       >
-        News name
+        Event name
       </span>
     </h2>
     <div class="flex gap-2">
@@ -47,11 +47,11 @@ require_once 'includes/header.php';
       >
         No
       </button>
-      <form id="FormConfirmNewsDelete">
+      <form id="FormConfirmEventDelete">
         <button 
           type="submit" 
-          id="confirmDelNewsId" 
-          name="delete_news_id"
+          id="confirmDelEventId" 
+          name="delete_event_id"
           class="btn-red"
         >
           Yes
@@ -68,8 +68,8 @@ require_once 'includes/header.php';
   ></div>
 
   <div class="flex w-full justify-end">
-    <a href="news-add.php" class="btn btn-primary">
-      Add News
+    <a href="event-add.php" class="btn btn-primary">
+      Add Event
     </a>
   </div>
 
@@ -78,12 +78,14 @@ require_once 'includes/header.php';
       <thead>
         <tr>
           <th>Title</th>
-          <th>Content</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Location</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
-      <tbody id="tableNewsData">
+      <tbody id="tableEventData">
 
       </tbody>
     </table>

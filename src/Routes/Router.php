@@ -2,6 +2,7 @@
 require_once '../../vendor/autoload.php';
 require_once '../Services/UserServices.php';
 require_once '../Services/NewsServices.php';
+require_once '../Services/EventService.php';
 require_once '../Services/CategoryServices.php';
 require_once '../Services/ItemServices.php';
 
@@ -47,6 +48,26 @@ switch ($uri) {
         json_encode(NewsService::DELETE($_POST));
       } else {
         json_encode(NewsService::POST($_POST));
+      }
+    } else {
+      sendNotAllowed();
+    }
+    break;
+  
+    case 'api/events':
+    if ($method === 'GET') {
+      if (isset($_GET['id'])) {
+        json_encode(EventService::GET($_GET['id']));
+      } else {
+        json_encode(EventService::GET());
+      }
+    } elseif ($method === 'POST') {
+      if (isset($_POST['update_event_id'])) {
+        json_encode(EventService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_event_id'])) {
+        json_encode(EventService::DELETE($_POST));
+      } else {
+        json_encode(EventService::POST($_POST));
       }
     } else {
       sendNotAllowed();
