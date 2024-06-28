@@ -3,6 +3,7 @@ require_once '../../vendor/autoload.php';
 require_once '../Services/UserServices.php';
 require_once '../Services/NewsServices.php';
 require_once '../Services/EventService.php';
+require_once '../Services/NewsletterService.php';
 require_once '../Services/CategoryServices.php';
 require_once '../Services/ItemServices.php';
 
@@ -54,7 +55,7 @@ switch ($uri) {
     }
     break;
   
-    case 'api/events':
+  case 'api/events':
     if ($method === 'GET') {
       if (isset($_GET['id'])) {
         json_encode(EventService::GET($_GET['id']));
@@ -73,6 +74,26 @@ switch ($uri) {
       sendNotAllowed();
     }
     break;
+
+  case 'api/newsletter':
+    if ($method === 'GET') {
+      if (isset($_GET['id'])) {
+        json_encode(NewsletterService::GET($_GET['id']));
+      } else {
+        json_encode(NewsletterService::GET());
+      }
+    } elseif ($method === 'POST') {
+      if (isset($_POST['update_id'])) {
+        json_encode(NewsletterService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_id'])) {
+        json_encode(NewsletterService::DELETE($_POST));
+      } else {
+        json_encode(NewsletterService::POST($_POST));
+      }
+    } else {
+      sendNotAllowed();
+    }
+    break;
     
   case 'api/categories':
     if ($method === 'GET') {
@@ -84,7 +105,7 @@ switch ($uri) {
     } elseif ($method === 'POST') {
       if (isset($_POST['update_cat_id'])) {
         json_encode(CategoryService::UPDATE($_POST, $_FILES));
-      } elseif (isset($_POST['delete_cat_id'])) {
+      } elseif (isset($_POST['delete_id'])) {
         json_encode(CategoryService::DELETE($_POST));
       } else {
         json_encode(CategoryService::POST($_POST, $_FILES));

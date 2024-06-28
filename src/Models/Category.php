@@ -193,20 +193,15 @@ class Category
   {
     // Delete category
     self::initConnection();
-    $delete_cat_query = "UPDATE " . self::$table . " 
-    SET status = '2' 
-    WHERE id = :id LIMIT 1";
+    $delete_query = "UPDATE " . self::$table . 
+      " SET status = '2' WHERE id = :id LIMIT 1"
+    ;
 
-    $stmt = self::$pdo->prepare($delete_cat_query);
-    $stmt->bindValue(':id', $data['delete_cat_id']);
+    $stmt = self::$pdo->prepare($delete_query);
+    $stmt->bindValue(':id', $data['delete_id']);
     $success = $stmt->execute();
 
     if ($success) {
-      $file_old_destination_path = self::$destination_path_upload . $data['logo'];
-      if (file_exists($file_old_destination_path)) {
-        unlink($file_old_destination_path);
-      }
-
       http_response_code(200);
       return json_encode(['message_success' => 'Category deleted successfully']);
     } else {
