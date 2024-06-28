@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8">
@@ -44,7 +44,8 @@
     <?php include('aside.php') ?>
 
     <main 
-      class="p-4 md:ml-0 min-h-[calc(100vh-10.05rem)] w-full min-w-0 
+      class="p-4 md:ml-0 min-h-[calc(100vh-4.7rem)] w-full 
+        min-w-0 flex flex-col gap-[2rem] justify-between
         <?= 
           isset($_SESSION['auth']) 
           ? 'ml-[12.8925rem]' : '' 

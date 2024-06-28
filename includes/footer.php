@@ -1,15 +1,19 @@
-  </main>
-  </div>
-
   <footer 
     class="mt-auto sticky flex justify-between 
-      text-sm p-4 py-8 border-t-2
+      text-sm p-2 z-50 bg-bgGray
     "
   >
     <div>
       <p class="text-dark/60">
         Copyright &COPY; Est Fes 
-        <span id="Date-copy">2024</span>
+        <?php 
+          $date = date('Y');
+          ?>
+            <span><?=$date?></span>
+          <?
+        ?>
+        <span id="Date-copy">
+        </span>
       </p>
     </div>
     <div>
@@ -27,6 +31,9 @@
       </ul>
     </div>
   </footer>
+  </main>
+  </div>
+
 
   <!-- jQuery Link -->
   <script src="./assets/js/jquery-3.4.1.slim.min.js"></script>

@@ -7,6 +7,7 @@ const endpointRegister = `${baseUrl}api/users/register`;
 const endpointUsers = `${baseUrl}api/users`;
 const endpointNews = `${baseUrl}api/news`;
 const endpointEvent = `${baseUrl}api/events`;
+const endpointNewsletter = `${baseUrl}api/newsletter`;
 const endpointCategories = `${baseUrl}api/categories`;
 const endpointItems = `${baseUrl}api/items`;
 
@@ -92,6 +93,26 @@ const fetchAllEvent = async () => {
 
 const fetchOneEvent = async (id) => {
   return await axios.get(`${endpointEvent}?id=${id}`)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
+}
+
+const fetchAllSubscription = async () => {
+  return await axios.get(endpointNewsletter)
+    .then(res => {
+      return res.data
+    })
+    .catch(err => {
+      console.error(err.message)
+    })
+}
+
+const fetchOneSubscription = async (id) => {
+  return await axios.get(`${endpointNewsletter}?id=${id}`)
     .then(res => {
       return res.data
     })
@@ -220,9 +241,17 @@ const unshowCancelDelete = () => {
 const showDeleteBox = () => {
   confirmDelBox.classList.replace('hidden', 'flex');
   sideOutDelete.classList.remove("hidden");
+  changePageIndicator('Delete')
+}
+
+const changePageIndicator = (option='') => {
+  if(pageIndicator.childElementCount === 3) {
+    pageIndicator.removeChild(pageIndicator.lastElementChild)
+  }
+
   pageIndicator.innerHTML += `
     <li>
-      <a href="#">Delete</a>
+      <a href="#">${option}</a>
     </li>
   `
 }
@@ -247,12 +276,43 @@ const addDeleteElementEvent = (name) => {
         case 'event':
           handleDeleteEvent(btn.value)
           break
+        case 'newsletter':
+          handleUnsubscribeUser(btn.value)
+          break
         default:
           console.log('invalid delete event name')
           break
       }
     }
   })
+}
+
+const addEditElementEvent = (name) => {
+  document.querySelectorAll("#editBtn").forEach(btn => {
+    btn.onclick = () => {
+      changePageIndicator('Edit')
+      switch(name) {
+        case 'cat':
+          handleEditCat(btn.value)
+          break
+        case 'newsletter':
+          handleEditSubscription(btn.value)
+          break
+        default:
+          console.log('invalid edit event name')
+          break
+      }
+    }
+  })
+}
+
+const showInfosToDelete = (data) => {
+  document.getElementById("confirmDelTitle").innerText = 
+    data.email ||
+    data.name || 
+    data.title;
+
+  document.getElementById("confirmDelId").value = data.id
 }
 
 const toggleCheckboxValueEvent = () => {
@@ -574,7 +634,7 @@ if(pageName === 'user-add.php') {
     formData.append('cpassword', event.target.cpassword.value)
     formData.append('birth', event.target.birth.value)
     formData.append('sex', event.target.sex.value)
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
     formData.append('role_as', event.target.role_as.value)
     formData.append('avatar', event.target.avatar.files[0])
 
@@ -633,7 +693,7 @@ if(pageName === 'user-edit.php') {
     formData.append('password', event.target.password.value)
     formData.append('birth', event.target.birth.value)
     formData.append('sex', event.target.sex.value)
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
     formData.append('role_as', event.target.role_as.value)
     formData.append('avatar_old_name', event.target.avatar_old_name.value)
     formData.append('avatar', event.target.avatar.files[0])
@@ -779,7 +839,7 @@ if(pageName === 'news-add.php') {
     formData.append('thumbnail', thumbnailUrl)
     formData.append('content', content)
     formData.append('file', fileUrl)
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
 
     await axios.post(
       endpointNews,
@@ -809,7 +869,7 @@ if(pageName === 'news-edit.php') {
     document.getElementById('slug').value = news.slug
     document.getElementById('old_thumbnail').value = news.thumbnail || ''
     document.getElementById('meta_title').value = news.meta_title
-    document.getElementById('newsContent').textContent = news.content
+    document.getElementById('contentPage').textContent = news.content
     document.getElementById('old_file').value = news.file || ''
     document.getElementById('status').checked = news.status === '1' ? true : false
 
@@ -845,7 +905,7 @@ if(pageName === 'news-edit.php') {
     formData.append('thumbnail', thumbnailUrl)
     formData.append('content', content)
     formData.append('file', fileUrl)
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
 
     await axios.post(
       endpointNews,
@@ -1065,11 +1125,180 @@ if(pageName === 'event-edit.php') {
 }
 
 
+/*  Newsletter Page */ 
+//////////////////////////////////////////////////////////
+if(pageName === 'newsletter-view.php') {
+  const formSub = document.getElementById('formSub');
+  const FormConfirmDelete = document.getElementById('FormConfirmDelete');
+
+  const showSubscriptions = (subs) => {
+    const tableSub = document.getElementById('tableSub')
+    tableSub.innerHTML = ''
+
+    if (subs) {
+      subs.forEach(sub => {
+        tableSub.innerHTML += `
+          <tr>
+            <td>${sub.email}</td>
+            <td>${sub.status === '0' ? 'active' : 'inactive'}</td>
+            <td class="flex gap-1.5">
+              <button 
+                id="editBtn" 
+                value="${sub.id}" 
+                class="btn-primary"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" 
+                  stroke-width="1.5" 
+                  stroke="currentColor" 
+                  class="w-4 h-4"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                  />
+                </svg>
+                edit
+              </button>
+
+              <?php if ($_SESSION['auth_role'] === '2') : ?>
+                <button 
+                  id="deleteBtn" 
+                  value="${sub.id}" 
+                  class="btn-red"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-4 h-4"
+                  >
+                    <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+                    />
+                  </svg>
+                  unsubscribe
+                </button>
+              <?php endif ?>
+            </td>
+          </tr>
+        `
+      })
+      addEditElementEvent('newsletter')
+      addDeleteElementEvent('newsletter')
+
+    } else {
+      tableSub.innerHTML = `
+        <tr>
+          <td rowspan="4">No records...</td>
+        </tr>
+      `
+    }
+  }
+
+  fetchAllSubscription().then(subs => {
+    showSubscriptions(subs)
+    addDataTable()
+  })
+
+  // Subscribe User
+  formSub.onsubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('email', event.target.email.value)
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
+
+    await axios.post(endpointNewsletter,formData)
+    .then(res => {
+      // formSub.reset()
+      // fetchAllSubscription();
+      location.reload()
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  // Edit Subscription
+  function handleEditSubscription(id) {
+    fetchOneSubscription(id).then(sub => {
+      showSubscriptionToEdit(sub)
+    })
+  }
+
+  const showSubscriptionToEdit = (sub) => {
+    window.location.href = "#"
+    const subEmail = document.getElementById("subEmail")
+
+    document.getElementById("editLabel").innerText = `Edit user ${sub.email}`
+    
+    subEmail.value = sub.email
+    subEmail.disabled = true
+    subEmail.classList.add('opacity-50')
+
+    document.getElementById("subStatus").checked = sub.status === '1' ? true : false
+    document.getElementById("subBtnSave").innerText = "Update"
+    subBtnCancel.classList.remove('hidden')
+    subBtnCancel.onclick = () => {
+      location.reload()
+    }
+
+    toggleCheckboxValueEvent()
+
+    formSub.onsubmit = async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData();
+      formData.append('update_id', sub.id)
+      formData.append('status', event.target.status.checked === true ? '1' : '0')
+
+      await axios.post(endpointNewsletter, formData)
+      .then(res => {
+        // formSub.reset()
+        // fetchAllCats();
+        location.reload()
+      }).catch(err => {
+        toastrAlert(err)
+      })
+    }
+  }
+
+  // Unsubscribe User
+  function handleUnsubscribeUser(id) {
+    fetchOneSubscription(id).then(sub => {
+      showInfosToDelete(sub)
+    })
+  }
+
+  FormConfirmDelete.onsubmit = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData()
+    formData.append("delete_id", event.target.delete_id.value)
+
+    await axios.post(endpointNewsletter, formData)
+    .then(res => {
+      // unshowCancelDelete()
+      // fetchAllCats()
+      location.reload();
+    })
+    .catch(err => {
+      toastrAlert(err)
+    })
+  }
+}
+
 /*  Categories Page */ 
 //////////////////////////////////////////////////////////
 if(pageName === 'category-view.php') {
   const formCat = document.getElementById('formCat');
-  const FormConfirmCatDelete = document.getElementById('FormConfirmCatDelete');
+  const FormConfirmDelete = document.getElementById('FormConfirmDelete');
 
   const showCats = (cats) => {
     const tableCat = document.getElementById('tableCatData')
@@ -1078,12 +1307,12 @@ if(pageName === 'category-view.php') {
     if (cats) {
       cats.forEach(cat => {
         tableCat.innerHTML += `
-        <tr>
+          <tr>
             <td>${cat.name}</td>
             <td>${cat.parent_name !== null ? cat.parent_name : ''}</td>
             <td>${cat.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
-              <button id="editCatBtn" value="${cat.id}" class="btn-primary">
+              <button id="editBtn" value="${cat.id}" class="btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                 </svg>
@@ -1102,7 +1331,7 @@ if(pageName === 'category-view.php') {
           </tr>
         `
       })
-      addEditCatEvent()
+      addEditElementEvent('cat')
       addDeleteElementEvent('cat')
 
     } else {
@@ -1129,7 +1358,7 @@ if(pageName === 'category-view.php') {
     formData.append('parent_category_id', event.target.parent_category_id.value)
     formData.append('title', event.target.title.value)
     formData.append('slug', event.target.slug.value)
-    formData.append('navbar_status', event.target.navbar_status.value === 'on' ? '1' : '0')
+    formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
     formData.append('logo', event.target.logo.files[0])
 
     await axios.post(
@@ -1140,28 +1369,16 @@ if(pageName === 'category-view.php') {
         }
       }
     ).then(res => {
-      formCat.reset()
-      fetchAllCats();
+      // formCat.reset()
+      // fetchAllCats();
+      location.reload()
     }).catch(err => {
       toastrAlert(err)
     })
   }
 
   // Edit Category
-  const addEditCatEvent = () => {
-    document.querySelectorAll('#editCatBtn').forEach(btn => {
-      btn.onclick = () => {
-        handleEditCat(btn.value)
-      }
-    })
-  }
-
-  const handleEditCat = (id) => {
-    pageIndicator.innerHTML += `
-      <li>
-        <a href="#">Edit</a>
-      </li>
-    `
+  function handleEditCat (id) {
     fetchOneCat(id).then(cat => {
       showCatToEdit(cat)
     })
@@ -1193,7 +1410,7 @@ if(pageName === 'category-view.php') {
       formData.append('parent_category_id', event.target.parent_category_id.value)
       formData.append('title', event.target.title.value)
       formData.append('slug', event.target.slug.value)
-      formData.append('navbar_status', event.target.navbar_status.value === 'on' ? '1' : '0')
+      formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
       formData.append('logo_old_name', cat.logo)
       formData.append('logo', event.target.logo.files[0])
 
@@ -1215,24 +1432,17 @@ if(pageName === 'category-view.php') {
   }
 
   // Delete Category
-  const showCatToDelete = (cat) => {
-    document.getElementById("confirmDelCatName").innerText = cat.name
-    document.getElementById("confirmDelCatLogo").value = cat.logo
-    document.getElementById("confirmDelCatId").value = cat.id
-  }
-
   function handleDeleteCat(id) {
     fetchOneCat(id).then(cat => {
-      showCatToDelete(cat)
+      showInfosToDelete(cat)
     })
   }
 
-  FormConfirmCatDelete.onsubmit = async (event) => {
+  FormConfirmDelete.onsubmit = async (event) => {
     event.preventDefault()
 
     const formData = new FormData()
-    formData.append("delete_cat_id", event.target.delete_cat_id.value)
-    formData.append("logo", event.target.delete_cat_logo.value)
+    formData.append("delete_id", event.target.delete_id.value)
 
     await axios.post(endpointCategories, formData)
       .then(res => {
@@ -1360,7 +1570,7 @@ if(pageName === 'item-add.php') {
     formData.append('logo', event.target.logo.files[0])
     formData.append('data_content', JSON.stringify(data_content))
     formData.append('file', event.target.file.files[0])
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
 
     await axios.post(
       endpointItems,
@@ -1433,7 +1643,7 @@ if(pageName === 'item-edit.php') {
     formData.append('logo_old_name', event.target.logo_old_name.value)
     formData.append('logo', event.target.logo.files[0])
     formData.append('data_content', JSON.stringify(data_content))
-    formData.append('status', event.target.status.value === 'on' ? '1' : '0')
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
     formData.append('file_old_name', event.target.file_old_name.value)
     formData.append('file', event.target.file.files[0])
 
