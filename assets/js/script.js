@@ -81,7 +81,7 @@ const fetchOneNews = async (id) => {
     })
 }
 
-const fetchAllEvent = async () => {
+const fetchAllEvents = async () => {
   return await axios.get(endpointEvent)
     .then(res => {
       return res.data
@@ -101,7 +101,7 @@ const fetchOneEvent = async (id) => {
     })
 }
 
-const fetchAllSubscription = async () => {
+const fetchAllSubscriptions = async () => {
   return await axios.get(endpointNewsletter)
     .then(res => {
       return res.data
@@ -488,6 +488,9 @@ if(logoutForm) {
 if(pageName === 'index.php') {
   const usersQte = document.getElementById('usersQte')
   const usersBlockQte = document.getElementById('usersBlockQte')
+  const newsQte = document.getElementById('newsQte')
+  const eventsQte = document.getElementById('eventsQte')
+  const subscriptionsQte = document.getElementById('subscriptionsQte')
   const catsQte = document.getElementById('catsQte')
   const itemsQte = document.getElementById('itemsQte')
 
@@ -502,6 +505,24 @@ if(pageName === 'index.php') {
     if (users.length) {
       const bUsers = users.filter(user => {return user.status === '1'})
       usersBlockQte.innerText = bUsers.length
+    }
+  })
+
+  fetchAllNews().then(news => {
+    if (news.length) {
+      newsQte.innerText = news.length
+    }
+  })
+  
+  fetchAllEvents().then(events => {
+    if (events.length) {
+      eventsQte.innerText = events.length
+    }
+  })
+  
+  fetchAllSubscriptions().then(subscriptions => {
+    if (subscriptions.length) {
+      subscriptionsQte.innerText = subscriptions.length
     }
   })
 
@@ -974,7 +995,7 @@ if(pageName === 'event-view.php') {
     }
   }
   
-  fetchAllEvent().then(event => {
+  fetchAllEvents().then(event => {
     showEvent(event)
     addDataTable()
   })
@@ -1202,7 +1223,7 @@ if(pageName === 'newsletter-view.php') {
     }
   }
 
-  fetchAllSubscription().then(subs => {
+  fetchAllSubscriptions().then(subs => {
     showSubscriptions(subs)
     addDataTable()
   })
@@ -1218,7 +1239,7 @@ if(pageName === 'newsletter-view.php') {
     await axios.post(endpointNewsletter,formData)
     .then(res => {
       // formSub.reset()
-      // fetchAllSubscription();
+      // fetchAllSubscriptions();
       location.reload()
     }).catch(err => {
       toastrAlert(err)

@@ -16,7 +16,7 @@ require_once 'includes/header.php';
         <a href="index.php">Dashboard</a>
       </li>/
       <li>
-        <a href="#">Newsletter</a>
+        <a href="#">Subscription</a>
       </li>/
     </ul>
   </div>
