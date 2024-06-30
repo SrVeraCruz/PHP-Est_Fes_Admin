@@ -12,10 +12,7 @@
   <!-- Local Links -->
 
   <!-- Summernote Css -->
-  <!-- <link href="./assets/css/summernote-lite.min.css" rel="stylesheet"> -->
-  <link 
-    href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet"
-  >
+  <link href="./assets/css/summernote-lite.min.css" rel="stylesheet">
   <!-- Summernote Css -->
 
   <!-- Data table Css Link -->

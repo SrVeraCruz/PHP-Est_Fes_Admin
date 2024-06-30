@@ -25,20 +25,20 @@ require_once 'includes/header.php';
     "
   >
     <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75 
+      class="p-4 shadow-md bg-primary/80
+        rounded-md min-h-28 hover:bg-primary 
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-[1.03] 
       "
     >
       <a href="user-view.php">
         <div>
-          <h5 class="text-base font-medium text-dark/80">
+          <h5 class="text-base font-medium text-white">
             Total Users
           </h5>
           <span 
             id="usersQte" 
-            class="text-dark/75 font-semibold text-2xl"
+            class="text-white font-semibold text-2xl"
           >
             0
           </span>
@@ -47,8 +47,8 @@ require_once 'includes/header.php';
     </div>
 
     <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75
+      class="p-4 shadow-md bg-green-100 
+        rounded-md min-h-28 hover:bg-green-200 
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
       "
@@ -69,8 +69,8 @@ require_once 'includes/header.php';
     </div>
 
     <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75
+      class="p-4 shadow-md bg-yellow-100 
+        rounded-md min-h-28 hover:bg-yellow-200
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
       "
@@ -91,8 +91,8 @@ require_once 'includes/header.php';
     </div>
     
     <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75
+      class="p-4 shadow-md bg-red-100
+        rounded-md min-h-28 hover:bg-red-200
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
       "
@@ -113,8 +113,8 @@ require_once 'includes/header.php';
     </div>
     
     <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75
+      class="p-4 shadow-md bg-dark/10 
+        rounded-md min-h-28 hover:bg-bg-dark/20
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
       "
@@ -135,7 +135,7 @@ require_once 'includes/header.php';
     </div>
     
     <div 
-      class="p-4 shadow-md bg-highlight/40 
+      class="p-4 shadow-md bg-indigo-100 
         rounded-md min-h-28 hover:bg-highlight/75
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
