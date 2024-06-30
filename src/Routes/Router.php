@@ -2,8 +2,13 @@
 require_once '../../vendor/autoload.php';
 require_once '../Services/UserServices.php';
 require_once '../Services/NewsServices.php';
+<<<<<<< HEAD
 require_once '../Services/EventServices.php';
 require_once '../Services/NewsletterServices.php';
+=======
+require_once '../Services/EventService.php';
+require_once '../Services/NewsletterService.php';
+>>>>>>> d2fc820e72879a62796938b866f63b86dbfb8390
 require_once '../Services/CategoryServices.php';
 require_once '../Services/ItemServices.php';
 
