@@ -136,7 +136,7 @@ require_once 'includes/header.php';
     
     <div 
       class="p-4 shadow-md bg-indigo-100 
-        rounded-md min-h-28 hover:bg-highlight/75
+        rounded-md min-h-28 hover:bg-indigo-200
         hover:shadow-lg transition duration-200 
         ease-in-out hover:scale-105 
       "

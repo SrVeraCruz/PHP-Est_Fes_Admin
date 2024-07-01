@@ -6,7 +6,7 @@ const endpointLogout = `${baseUrl}api/users/logout`;
 const endpointRegister = `${baseUrl}api/users/register`;
 const endpointUsers = `${baseUrl}api/users`;
 const endpointNews = `${baseUrl}api/news`;
-const endpointEvent = `${baseUrl}api/events`;
+const endpointEvents = `${baseUrl}api/events`;
 const endpointNewsletter = `${baseUrl}api/newsletter`;
 const endpointCategories = `${baseUrl}api/categories`;
 const endpointItems = `${baseUrl}api/items`;
@@ -23,10 +23,7 @@ const pageName = pageUrl.substring(pageUrl.lastIndexOf("/") + 1)
 const navbar_hamburguer = document.getElementById("navbar-hamburguer");
 const aside = document.getElementById("aside");
 
-const confirmDelBox = document.getElementById("confirmDelBox");
 const pageIndicator = document.getElementById("pageIndicator");
-const cancelDeleteBtn = document.getElementById('cancelDelete')
-const sideOutDelete = document.getElementById("sideOutDelete");
 
 
 /* Navbar event */ 
@@ -82,7 +79,7 @@ const fetchOneNews = async (id) => {
 }
 
 const fetchAllEvents = async () => {
-  return await axios.get(endpointEvent)
+  return await axios.get(endpointEvents)
     .then(res => {
       return res.data
     })
@@ -92,7 +89,7 @@ const fetchAllEvents = async () => {
 }
 
 const fetchOneEvent = async (id) => {
-  return await axios.get(`${endpointEvent}?id=${id}`)
+  return await axios.get(`${endpointEvents}?id=${id}`)
     .then(res => {
       return res.data
     })
@@ -232,16 +229,102 @@ const removeContentItemEvent = () => {
   })
 }
 
-const unshowCancelDelete = () => {
-  confirmDelBox.classList.replace('flex', 'hidden');
-  sideOutDelete.classList.add("hidden");
-  pageIndicator.removeChild(pageIndicator.lastElementChild)
+const appendConfirmDeleteBox = () => {
+  const main = document.getElementById('main')
+  
+  main.innerHTML += `
+    <div 
+      id="confirmDelBox" 
+      class="fixed top-[50%] translate-y-[-50%] 
+        left-[50%] translate-x-[-50%] bg-white 
+        p-20 px-14 rounded-2xl border border-gray-200 
+        shadow-lg flex-col gap-4 items-center 
+        justify-center text-center transition-all 
+        duration-200 ease-in-out z-[61] hidden
+      "
+    >
+
+      <h2>
+        Do you want to unsubscribe 
+        <span id="confirmDelTitle" class="font-semibold">
+          Item name
+        </span>
+      </h2>
+      <div class="flex gap-2">
+        <button id="cancelDelete" class="btn-primary">
+          No
+        </button>
+        <form id="FormConfirmDelete">
+          <button 
+            id="confirmDelId"
+            name="delete_id"
+            type="submit" 
+            class="btn-red"
+          >
+            Yes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div 
+      id="sideOutDelete" 
+      class="min-w-full min-h-screen bg-dark/50 
+        fixed top-0 left-0 z-[60] cursor-pointer hidden
+      "
+    ></div>
+  `
 }
 
-const showDeleteBox = () => {
+const unshowConfirmDeleteBox = (name) => {
+  const confirmDelBox = document.getElementById("confirmDelBox")
+  const sideOutDelete = document.getElementById("sideOutDelete")
+
+  confirmDelBox.classList.replace('flex', 'hidden');
+  sideOutDelete.classList.add("hidden");
+
+  if(pageIndicator.childElementCount === 3) {
+    pageIndicator.removeChild(pageIndicator.lastElementChild)
+  }
+  addDeleteElementEvent(name)
+}
+
+const showDeleteBox = (name) => {
+  appendConfirmDeleteBox()
+  
+  const confirmDelBox = document.getElementById("confirmDelBox")
+  const sideOutDelete = document.getElementById("sideOutDelete")
+  const cancelDeleteBtn = document.getElementById('cancelDelete')
+  
   confirmDelBox.classList.replace('hidden', 'flex');
   sideOutDelete.classList.remove("hidden");
   changePageIndicator('Delete')
+  
+  cancelDeleteBtn.onclick = () => {
+    unshowConfirmDeleteBox(name)
+  }
+
+  sideOutDelete.onclick = () => {
+    unshowConfirmDeleteBox(name)
+  }
+}
+
+const submitFormDelete = (endpoint) => {
+  const formConfirmDelete = document.getElementById('FormConfirmDelete')
+  formConfirmDelete.onsubmit = async (event) => {
+    event.preventDefault()
+    
+    const formData = new FormData()
+    formData.append("delete_id", event.target.delete_id.value)
+    
+    await axios.post(endpoint, formData)
+    .then(() => {
+      location.reload();
+    })
+    .catch(err => {
+      toastrAlert(err)
+    })
+  }
 }
 
 const changePageIndicator = (option='') => {
@@ -259,29 +342,47 @@ const changePageIndicator = (option='') => {
 const addDeleteElementEvent = (name) => {
   document.querySelectorAll("#deleteBtn").forEach(btn => {
     btn.onclick = () => {
-      showDeleteBox()
+      showDeleteBox(name)
       switch(name) {
         case 'user':
-          handleDeleteUser(btn.value)
-          break
-        case 'cat':
-          handleDeleteCat(btn.value)
-          break
-        case 'item':
-          handleDeleteItem(btn.value)
-          break
+          fetchOneUser(btn.value).then(user => {
+            showInfosToDelete(user, endpointUsers)
+          });
+          break;
+
         case 'news':
-          handleDeleteNews(btn.value)
-          break
+          fetchOneNews(btn.value).then(news => {
+            showInfosToDelete(news, endpointNews)
+          });
+          break;
+
         case 'event':
-          handleDeleteEvent(btn.value)
-          break
+          fetchOneEvent(btn.value).then(event => {
+            showInfosToDelete(event, endpointEvents)
+          });
+          break;
+
         case 'newsletter':
-          handleUnsubscribeUser(btn.value)
-          break
+          fetchOneSubscription(btn.value).then(sub => {
+            showInfosToDelete(sub, endpointNewsletter)
+          })
+          break;
+
+        case 'cat':
+          fetchOneCat(btn.value).then(cat => {
+            showInfosToDelete(cat, endpointCategories)
+          })
+          break;
+
+        case 'item':
+          fetchOneItem(btn.value).then(item => {
+            showInfosToDelete(item, endpointItems)
+          });
+          break;
+
         default:
           console.log('invalid delete event name')
-          break
+          break;
       }
     }
   })
@@ -293,11 +394,17 @@ const addEditElementEvent = (name) => {
       changePageIndicator('Edit')
       switch(name) {
         case 'cat':
-          handleEditCat(btn.value)
+          fetchOneCat(btn.value).then(cat => {
+            showCatToEdit(cat)
+          })
           break
+
         case 'newsletter':
-          handleEditSubscription(btn.value)
+          fetchOneSubscription(btn.value).then(sub => {
+            showSubscriptionToEdit(sub)
+          })
           break
+
         default:
           console.log('invalid edit event name')
           break
@@ -306,13 +413,16 @@ const addEditElementEvent = (name) => {
   })
 }
 
-const showInfosToDelete = (data) => {
+const showInfosToDelete = (data, endpoint) => {
   document.getElementById("confirmDelTitle").innerText = 
     data.email ||
     data.name || 
-    data.title;
+    data.title
+  ;
 
   document.getElementById("confirmDelId").value = data.id
+
+  submitFormDelete(endpoint)
 }
 
 const toggleCheckboxValueEvent = () => {
@@ -397,16 +507,7 @@ const toastrAlert = (err) => {
     toastr.error('Something went wrong!');
   }
 }
- 
-if(cancelDeleteBtn && sideOutDelete) {
-  cancelDeleteBtn.onclick = () => {
-    unshowCancelDelete()
-  }
 
-  sideOutDelete.onclick = () => {
-    unshowCancelDelete()
-  }
-}
 
 /* Register Page */ 
 //////////////////////////////////////////////////////////
@@ -416,6 +517,13 @@ if(pageName === 'register.php') {
   formUserRegister.onsubmit = async (event) => {
     event.preventDefault();
 
+    let avatarUrl = ''
+    const avatar = event.target.avatar.files[0]
+
+    if(avatar) {
+      avatarUrl = await handleUpload(avatar)
+    }
+
     const formData = new FormData();
     formData.append('fname', event.target.fname.value)
     formData.append('lname', event.target.lname.value)
@@ -424,16 +532,10 @@ if(pageName === 'register.php') {
     formData.append('cpassword', event.target.cpassword.value)
     formData.append('birth', event.target.birth.value)
     formData.append('sex', event.target.sex.value)
-    formData.append('avatar', event.target.avatar.files[0])
+    formData.append('avatar', avatarUrl)
     
-    await axios.post(
-      endpointRegister,
-      formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    ).then(res => {
+    await axios.post(endpointRegister, formData)
+    .then(() => {
       window.location.href = "login.php";
     }).catch(err => {
       toastrAlert(err)
@@ -455,7 +557,7 @@ if(pageName === 'login.php') {
     formData.append('password', event.target.password.value)
     
     await axios.post(endpointLogin, formData)
-    .then(res => {
+    .then(() => {
       window.location.href = "index.php";
     }).catch(err => {
       toastrAlert(err)
@@ -472,7 +574,7 @@ if(logoutForm) {
     event.preventDefault()
     
     axios.post(endpointLogout)
-      .then(res => {
+      .then(() => {
         location.href = 'login.php'
       })
       .catch(err => {
@@ -569,17 +671,46 @@ if(pageName === 'user-view.php') {
           <td>${user.email}</td>
           <td>${getUserRole(user.role_as)}</td>
           <td class="flex gap-1.5">
-            <a href="user-edit.php?id=${user.id}" class="btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            <a 
+              href="user-edit.php?id=${user.id}" 
+              class="btn-primary"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke-width="1.5" 
+                stroke="currentColor" 
+                class="w-4 h-4"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                />
               </svg>
             edit
           </a>
           
           <?php if ($_SESSION['auth_role'] === '2') : ?>
-          <button id="deleteBtn" value="${user.id}" class="btn-red">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+          <button 
+            id="deleteBtn" 
+            value="${user.id}" 
+            class="btn-red"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke-width="1.5" 
+              stroke="currentColor" 
+              class="w-4 h-4"
+            >
+              <path 
+                stroke-linecap="round" 
+                stroke-linejoin="round" 
+                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+              />
             </svg>
             delete
           </button>
@@ -603,41 +734,6 @@ if(pageName === 'user-view.php') {
     showUsers(users)
     addDataTable()
   })
-
-  // Users delete
-  const formConfirmUserDelete = document.getElementById("formConfirmUserDelete")
-
-  function handleDeleteUser(id) {
-    fetchOneUser(id).then(user => {
-      showUserToDelete(user)
-    });
-  }
-
-  const showUserToDelete = (user) => {
-    document.getElementById("confirmDelUserName").innerHTML = user.fname + '&nbsp;' + user.lname
-    document.getElementById("confirmDelUserRole").value = user.role_as
-    document.getElementById("confirmDelUserAvatar").value = user.avatar
-    document.getElementById("confirmDelUserId").value = user.id
-  }
-  
-  formConfirmUserDelete.onsubmit = async (event) => {
-    event.preventDefault()
-    
-    const formData = new FormData()
-    formData.append("delete_user_id", event.target.confirmDelUserId.value)
-    formData.append("role_as", event.target.confirmDelUserRole.value)
-    formData.append("avatar", event.target.confirmDelUserAvatar.value)
-    
-    await axios.post(endpointUsers, formData)
-    .then(res => {
-      // unshowCancelDelete()
-      // fetchAllUsers()
-      location.reload();
-    })
-    .catch(err => {
-      toastrAlert(err)
-    })
-  }
 }
 
 // Users add
@@ -646,6 +742,13 @@ if(pageName === 'user-add.php') {
 
   formUserAdd.onsubmit = async (event) => {
     event.preventDefault();
+
+    let avatarUrl = ''
+    const avatar = event.target.avatar.files[0]
+
+    if(avatar) {
+      avatarUrl = await handleUpload(avatar)
+    }
 
     const formData = new FormData();
     formData.append('fname', event.target.fname.value)
@@ -657,16 +760,10 @@ if(pageName === 'user-add.php') {
     formData.append('sex', event.target.sex.value)
     formData.append('status', event.target.status.checked === true ? '1' : '0')
     formData.append('role_as', event.target.role_as.value)
-    formData.append('avatar', event.target.avatar.files[0])
+    formData.append('avatar', avatarUrl)
 
-    await axios.post(
-      endpointUsers,
-      formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    ).then(res => {
+    await axios.post(endpointUsers,formData)
+    .then(() => {
       window.location.href = "user-view.php";
     }).catch(err => {
       toastrAlert(err)
@@ -684,7 +781,6 @@ if(pageName === 'user-edit.php') {
   }
 
   const showUserData = (user) => {
-    document.getElementById('userId').value = user.id
     document.getElementById('userFname').value = user.fname
     document.getElementById('userLname').value = user.lname
     document.getElementById('userEmail').value = user.email
@@ -697,7 +793,7 @@ if(pageName === 'user-edit.php') {
     })
     document.getElementById('userStatus').checked = user.status === '1' ? true : false
     document.getElementById('userRole').value = user.role_as
-    document.getElementById('userAvatarOldName').value = user.avatar
+    document.getElementById('oldAvatar').value = user.avatar || ''
 
     toggleCheckboxValueEvent()
   }
@@ -705,9 +801,16 @@ if(pageName === 'user-edit.php') {
   const formUserUpdate = document.getElementById('formUserUpdate')
   formUserUpdate.onsubmit = async (event) => {
     event.preventDefault();
+
+    let avatarUrl = event.target.old_avatar.value
+    const avatar = event.target.avatar.files[0]
+
+    if(avatar) {
+      avatarUrl = await handleUpload(avatar)
+    }
     
     const formData = new FormData();
-    formData.append('update_user_id', event.target.user_id.value)
+    formData.append('update_id', user_id)
     formData.append('fname', event.target.fname.value)
     formData.append('lname', event.target.lname.value)
     formData.append('email', event.target.email.value)
@@ -716,18 +819,11 @@ if(pageName === 'user-edit.php') {
     formData.append('sex', event.target.sex.value)
     formData.append('status', event.target.status.checked === true ? '1' : '0')
     formData.append('role_as', event.target.role_as.value)
-    formData.append('avatar_old_name', event.target.avatar_old_name.value)
-    formData.append('avatar', event.target.avatar.files[0])
+    formData.append('avatar', avatarUrl)
 
     try {
-      await axios.post(
-        endpointUsers,
-        formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      ).then(res => {
+      await axios.post(endpointUsers, formData)
+      .then(() => {
         window.location.href = "user-view.php";
       })
     } catch (err) {
@@ -759,17 +855,45 @@ if(pageName === 'news-view.php') {
             <td>${news.content}</td>
             <td>${news.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
-              <a href="news-edit.php?id=${news.id}" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              <a 
+                href="news-edit.php?id=${news.id}" 
+                class="btn-primary"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke-width="1.5" 
+                  stroke="currentColor" 
+                  class="w-4 h-4"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                  />
                 </svg>
                 edit
               </a>
   
               <?php if ($_SESSION['auth_role'] === '2') : ?>
-                <button id="deleteBtn" value="${news.id}" class="btn-red">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                <button 
+                  id="deleteBtn" 
+                  value="${news.id}" 
+                  class="btn-red"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-4 h-4"
+                  >
+                    <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+                    />
                   </svg>
                   delete
                 </button>
@@ -793,41 +917,6 @@ if(pageName === 'news-view.php') {
     showNews(items)
     addDataTable()
   })
-  
-  // Delete News
-  const FormConfirmNewsDelete = document.getElementById("FormConfirmNewsDelete")
-
-  function handleDeleteNews(id) {
-    fetchOneNews(id).then(news => {
-      showNewsToDelete(news)
-    });
-  }
-
-  const showNewsToDelete = (news) => {
-    document.getElementById("confirmDelNewsTitle").innerText = news.title
-    document.getElementById("confirmDelNewsLogo").value = news.logo
-    document.getElementById("confirmDelNewsFile").value = news.file
-    document.getElementById("confirmDelNewsId").value = news.id
-  }
-
-  FormConfirmNewsDelete.onsubmit = async (event) => {
-    event.preventDefault()
-
-    const formData = new FormData()
-    formData.append("delete_news_id", event.target.delete_news_id.value)
-    formData.append("logo", event.target.delete_news_logo_name.value)
-    formData.append("file", event.target.delete_news_file_name.value)
-
-    await axios.post(endpointNews, formData)
-      .then(() => {
-        // unshowCancelDelete()
-        // fetchAllnews()
-        location.reload();
-      })
-      .catch(err => {
-        toastrAlert(err)
-      })
-  }
 }
 
 // Add News
@@ -852,10 +941,11 @@ if(pageName === 'news-add.php') {
     }
 
     const content = getContentPage();
+    const slug = formatSlug(event.target.title.value)
 
     const formData = new FormData();
     formData.append('title', event.target.title.value)
-    formData.append('slug', event.target.slug.value)
+    formData.append('slug', slug)
     formData.append('meta_title', event.target.meta_title.value)
     formData.append('thumbnail', thumbnailUrl)
     formData.append('content', content)
@@ -887,11 +977,10 @@ if(pageName === 'news-edit.php') {
   
   const showNewsData = (news) => {
     document.getElementById('title').value = news.title
-    document.getElementById('slug').value = news.slug
-    document.getElementById('old_thumbnail').value = news.thumbnail || ''
-    document.getElementById('meta_title').value = news.meta_title
+    document.getElementById('oldThumbnail').value = news.thumbnail || ''
+    document.getElementById('metaTitle').value = news.meta_title
     document.getElementById('contentPage').textContent = news.content
-    document.getElementById('old_file').value = news.file || ''
+    document.getElementById('oldFile').value = news.file || ''
     document.getElementById('status').checked = news.status === '1' ? true : false
 
     toggleCheckboxValueEvent()
@@ -917,11 +1006,12 @@ if(pageName === 'news-edit.php') {
     }
 
     const content = getContentPage();
+    const slug = formatSlug(event.target.title.value)
 
     const formData = new FormData();
-    formData.append('update_news_id', news_id)
+    formData.append('update_id', news_id)
     formData.append('title', event.target.title.value)
-    formData.append('slug', event.target.slug.value)
+    formData.append('slug', slug)
     formData.append('meta_title', event.target.meta_title.value)
     formData.append('thumbnail', thumbnailUrl)
     formData.append('content', content)
@@ -965,17 +1055,46 @@ if(pageName === 'event-view.php') {
             <td>${event.location}</td>
             <td>${event.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
-              <a href="event-edit.php?id=${event.id}" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              <a 
+                href="event-edit.php?id=${event.id}" 
+                class="btn-primary"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke-width="1.5" 
+                  stroke="currentColor" 
+                  class="w-4 h-4"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                  />
                 </svg>
                 edit
               </a>
   
               <?php if ($_SESSION['auth_role'] === '2') : ?>
-                <button id="deleteBtn" value="${event.id}" class="btn-red">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                <button 
+                  id="deleteBtn" 
+                  value="${event.id}" 
+                  class="btn-red"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-4 h-4"
+                  >
+                    <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+                    />
                   </svg>
                   delete
                 </button>
@@ -999,37 +1118,6 @@ if(pageName === 'event-view.php') {
     showEvent(event)
     addDataTable()
   })
-  
-  // Delete Event
-  const FormConfirmEventDelete = document.getElementById("FormConfirmEventDelete")
-
-  function handleDeleteEvent(id) {
-    fetchOneEvent(id).then(event => {
-      showEventToDelete(event)
-    });
-  }
-
-  const showEventToDelete = (event) => {
-    document.getElementById("confirmDelEventTitle").innerText = event.title
-    document.getElementById("confirmDelEventId").value = event.id
-  }
-
-  FormConfirmEventDelete.onsubmit = async (ev) => {
-    ev.preventDefault()
-
-    const formData = new FormData()
-    formData.append("delete_event_id", ev.target.delete_event_id.value)
-
-    await axios.post(endpointEvent, formData)
-      .then(() => {
-        // unshowCancelDelete()
-        // fetchAllnews()
-        location.reload();
-      })
-      .catch(err => {
-        toastrAlert(err)
-      })
-  }
 }
 
 
@@ -1063,7 +1151,7 @@ if(pageName === 'event-add.php') {
     formData.append('status', ev.target.status.checked === true ? '1' : '0')
 
     await axios.post(
-      endpointEvent,
+      endpointEvents,
       formData
     ).then(() => {
       window.location.href = "event-view.php";
@@ -1118,7 +1206,7 @@ if(pageName === 'event-edit.php') {
     const slug = formatSlug(ev.target.title.value)
 
     const formData = new FormData();
-    formData.append('update_event_id', event_id)
+    formData.append('update_id', event_id)
     formData.append('title', ev.target.title.value)
     formData.append('slug', slug)
     formData.append('meta_title', ev.target.meta_title.value)
@@ -1131,7 +1219,7 @@ if(pageName === 'event-edit.php') {
 
 
     await axios.post(
-      endpointEvent,
+      endpointEvents,
       formData
     ).then(() => {
       window.location.href = "event-view.php";
@@ -1150,7 +1238,6 @@ if(pageName === 'event-edit.php') {
 //////////////////////////////////////////////////////////
 if(pageName === 'newsletter-view.php') {
   const formSub = document.getElementById('formSub');
-  const FormConfirmDelete = document.getElementById('FormConfirmDelete');
 
   const showSubscriptions = (subs) => {
     const tableSub = document.getElementById('tableSub')
@@ -1237,7 +1324,7 @@ if(pageName === 'newsletter-view.php') {
     formData.append('status', event.target.status.checked === true ? '1' : '0')
 
     await axios.post(endpointNewsletter,formData)
-    .then(res => {
+    .then(() => {
       // formSub.reset()
       // fetchAllSubscriptions();
       location.reload()
@@ -1246,14 +1333,9 @@ if(pageName === 'newsletter-view.php') {
     })
   }
 
-  // Edit Subscription
-  function handleEditSubscription(id) {
-    fetchOneSubscription(id).then(sub => {
-      showSubscriptionToEdit(sub)
-    })
-  }
 
-  const showSubscriptionToEdit = (sub) => {
+  // Edit Subscription
+  function showSubscriptionToEdit(sub) {
     window.location.href = "#"
     const subEmail = document.getElementById("subEmail")
 
@@ -1289,37 +1371,12 @@ if(pageName === 'newsletter-view.php') {
       })
     }
   }
-
-  // Unsubscribe User
-  function handleUnsubscribeUser(id) {
-    fetchOneSubscription(id).then(sub => {
-      showInfosToDelete(sub)
-    })
-  }
-
-  FormConfirmDelete.onsubmit = async (event) => {
-    event.preventDefault()
-
-    const formData = new FormData()
-    formData.append("delete_id", event.target.delete_id.value)
-
-    await axios.post(endpointNewsletter, formData)
-    .then(res => {
-      // unshowCancelDelete()
-      // fetchAllCats()
-      location.reload();
-    })
-    .catch(err => {
-      toastrAlert(err)
-    })
-  }
 }
 
 /*  Categories Page */ 
 //////////////////////////////////////////////////////////
 if(pageName === 'category-view.php') {
   const formCat = document.getElementById('formCat');
-  const FormConfirmDelete = document.getElementById('FormConfirmDelete');
 
   const showCats = (cats) => {
     const tableCat = document.getElementById('tableCatData')
@@ -1333,17 +1390,47 @@ if(pageName === 'category-view.php') {
             <td>${cat.parent_name !== null ? cat.parent_name : ''}</td>
             <td>${cat.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
-              <button id="editBtn" value="${cat.id}" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              <button 
+                id="editBtn" 
+                value="${cat.id}" 
+                class="btn-primary"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke-width="1.5" 
+                  stroke="currentColor" 
+                  class="w-4 h-4"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                  />
                 </svg>
                 edit
               </button>
 
               <?php if ($_SESSION['auth_role'] === '2') : ?>
-                <button id="deleteBtn" value="${cat.id}" class="btn-red">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                <button 
+                  id="deleteBtn" 
+                  value="${cat.id}" 
+                  class="btn-red"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-4 h-4"
+                  >
+                    <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+                    />
                   </svg>
                   delete
                 </button>
@@ -1374,22 +1461,25 @@ if(pageName === 'category-view.php') {
   formCat.onsubmit = async (event) => {
     event.preventDefault();
 
+    let logoUrl = ''
+    const logo = event.target.logo.files[0]
+
+    if(logo) {
+      logoUrl = await handleUpload(logo)
+    }
+
+    const slug = formatSlug(event.target.title.value)
+
     const formData = new FormData();
     formData.append('name', event.target.name.value)
     formData.append('parent_category_id', event.target.parent_category_id.value)
     formData.append('title', event.target.title.value)
-    formData.append('slug', event.target.slug.value)
+    formData.append('slug', slug)
     formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
-    formData.append('logo', event.target.logo.files[0])
+    formData.append('logo', logoUrl)
 
-    await axios.post(
-      endpointCategories,
-      formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    ).then(res => {
+    await axios.post(endpointCategories, formData)
+    .then(() => {
       // formCat.reset()
       // fetchAllCats();
       location.reload()
@@ -1399,20 +1489,13 @@ if(pageName === 'category-view.php') {
   }
 
   // Edit Category
-  function handleEditCat (id) {
-    fetchOneCat(id).then(cat => {
-      showCatToEdit(cat)
-    })
-  }
-
-  const showCatToEdit = (cat) => {
+  function showCatToEdit(cat) {
     window.location.href = "#"
 
     document.getElementById("catLabel").innerText = `Edit category ${cat.name}`
     document.getElementById("catName").value = cat.name
     document.getElementById("selectCat").value = cat.parent_category_id
     document.getElementById("catTitle").value = cat.title
-    document.getElementById("catSlug").value = cat.slug
     document.getElementById("catStatus").checked = cat.navbar_status === '1' ? true : false
     document.getElementById("catBtnSave").innerText = "Update"
     catBtnCancel.classList.remove('hidden')
@@ -1425,24 +1508,26 @@ if(pageName === 'category-view.php') {
     formCat.onsubmit = async (event) => {
       event.preventDefault();
 
+      let logoUrl = cat.logo || ''
+      const logo = event.target.logo.files[0]
+
+      if(logo) {
+        logoUrl = await handleUpload(logo)
+      }
+
+      const slug = formatSlug(event.target.title.value)
+
       const formData = new FormData();
-      formData.append('update_cat_id', cat.id)
+      formData.append('update_id', cat.id)
       formData.append('name', event.target.name.value)
       formData.append('parent_category_id', event.target.parent_category_id.value)
       formData.append('title', event.target.title.value)
-      formData.append('slug', event.target.slug.value)
+      formData.append('slug', slug)
       formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
-      formData.append('logo_old_name', cat.logo)
-      formData.append('logo', event.target.logo.files[0])
+      formData.append('logo', logoUrl)
 
-      await axios.post(
-        endpointCategories,
-        formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      ).then(res => {
+      await axios.post(endpointCategories, formData)
+      .then(() => {
         // formCat.reset()
         // fetchAllCats();
         location.reload()
@@ -1450,30 +1535,6 @@ if(pageName === 'category-view.php') {
         toastrAlert(err)
       })
     }
-  }
-
-  // Delete Category
-  function handleDeleteCat(id) {
-    fetchOneCat(id).then(cat => {
-      showInfosToDelete(cat)
-    })
-  }
-
-  FormConfirmDelete.onsubmit = async (event) => {
-    event.preventDefault()
-
-    const formData = new FormData()
-    formData.append("delete_id", event.target.delete_id.value)
-
-    await axios.post(endpointCategories, formData)
-      .then(res => {
-        // unshowCancelDelete()
-        // fetchAllCats()
-        location.reload();
-      })
-      .catch(err => {
-        toastrAlert(err)
-      })
   }
 }
 
@@ -1491,23 +1552,52 @@ if(pageName === 'item-view.php') {
     if (items) {
       items.forEach(item => {
         tableItem.innerHTML += `
-        <tr>
+          <tr>
             <td>${item.name}</td>
             <td>${item.title}</td>
             <td>${item.category_name}</td>
             <td>${item.status === '0' ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
-              <a href="item-edit.php?id=${item.id}" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              <a 
+                href="item-edit.php?id=${item.id}" 
+                class="btn-primary"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke-width="1.5" 
+                  stroke="currentColor" 
+                  class="w-4 h-4"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" 
+                  />
                 </svg>
                 edit
               </a>
   
               <?php if ($_SESSION['auth_role'] === '2') : ?>
-                <button id="deleteBtn" value="${item.id}" class="btn-red">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                <button 
+                  id="deleteBtn" 
+                  value="${item.id}" 
+                  class="btn-red"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke-width="1.5" 
+                    stroke="currentColor" 
+                    class="w-4 h-4"
+                  >
+                    <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" 
+                    />
                   </svg>
                   delete
                 </button>
@@ -1531,42 +1621,6 @@ if(pageName === 'item-view.php') {
     showItems(items)
     addDataTable()
   })
-  
-  // Delete Items
-  const FormConfirmItemDelete = document.getElementById("FormConfirmItemDelete")
-
-  function handleDeleteItem(id) {
-    fetchOneItem(id).then(item => {
-      showItemToDelete(item)
-    });
-  }
-
-  const showItemToDelete = (item) => {
-    document.getElementById("confirmDelItemName").innerText = item.name
-    document.getElementById("confirmDelItemLogo").value = item.logo
-    document.getElementById("confirmDelItemFile").value = item.file
-    document.getElementById("confirmDelItemId").value = item.id
-  }
-
-  FormConfirmItemDelete.onsubmit = async (event) => {
-    event.preventDefault()
-
-    const formData = new FormData()
-    formData.append("delete_item_id", event.target.delete_item_id.value)
-    formData.append("logo", event.target.delete_item_logo_name.value)
-    formData.append("file", event.target.delete_item_file_name.value)
-
-    await axios.post(endpointItems, formData)
-      .then(res => {
-        // unshowCancelDelete()
-        // fetchAllItems()
-        location.reload();
-      })
-      .catch(err => {
-        toastrAlert(err)
-      })
-  }
-
 }
 
 // Add Items
@@ -1575,32 +1629,40 @@ if(pageName === 'item-add.php') {
 
   addContentItemEvent()
   removeContentItemEvent()
-  
 
   formAddItem.onsubmit = async (event) => {
     event.preventDefault();
 
+    let logoUrl = ''
+    let fileUrl = ''
+
+    const logo = event.target.logo.files[0]
+    const file = event.target.file.files[0]
+
+    if(logo) {
+      logoUrl = await handleUpload(logo)
+    }
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
     const data_content = getItemDataContent();
+    const slug = formatSlug(event.target.title.value)
 
     const formData = new FormData();
     formData.append('name', event.target.name.value)
     formData.append('category_id', event.target.category_id.value)
     formData.append('title', event.target.title.value)
-    formData.append('slug', event.target.slug.value)
+    formData.append('slug', slug)
     formData.append('meta_title', event.target.meta_title.value)
-    formData.append('logo', event.target.logo.files[0])
+    formData.append('logo', logoUrl)
     formData.append('data_content', JSON.stringify(data_content))
-    formData.append('file', event.target.file.files[0])
+    formData.append('file', fileUrl)
     formData.append('status', event.target.status.checked === true ? '1' : '0')
 
-    await axios.post(
-      endpointItems,
-      formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    ).then(res => {
+    await axios.post(endpointItems, formData)
+    .then(() => {
       window.location.href = "item-view.php";
     }).catch(err => {
       toastrAlert(err)
@@ -1633,11 +1695,10 @@ if(pageName === 'item-edit.php') {
     document.getElementById('name').value = item.name
     document.getElementById('selectCat').value = item.category_id
     document.getElementById('title').value = item.title
-    document.getElementById('slug').value = item.slug
     document.getElementById('metaTitle').value = item.meta_title
-    document.getElementById('logoOldName').value = item.logo
+    document.getElementById('oldLogo').value = item.logo
     document.getElementById('status').checked = item.status === '1' ? true : false
-    document.getElementById('fileOldName').value = item.file
+    document.getElementById('oldFile').value = item.file
 
     toggleCheckboxValueEvent()
 
@@ -1652,30 +1713,37 @@ if(pageName === 'item-edit.php') {
   formItemUpdate.onsubmit = async (event) => {
     event.preventDefault();
 
+    let logoUrl =  event.target.old_logo.value
+    let fileUrl = event.target.old_file.value
+
+    const logo = event.target.logo.files[0]
+    const file = event.target.file.files[0]
+
+    if(logo) {
+      logoUrl = await handleUpload(logo)
+    }
+
+    if(file) {
+      fileUrl = await handleUpload(file)
+    }
+
     const data_content = getItemDataContent();
+    const slug = formatSlug(event.target.title.value)
 
     const formData = new FormData();
-    formData.append('update_item_id', item_id)
+    formData.append('update_id', item_id)
     formData.append('name', event.target.name.value)
     formData.append('category_id', event.target.category_id.value)
     formData.append('title', event.target.title.value)
-    formData.append('slug', event.target.slug.value)
+    formData.append('slug', slug)
     formData.append('meta_title', event.target.meta_title.value)
-    formData.append('logo_old_name', event.target.logo_old_name.value)
-    formData.append('logo', event.target.logo.files[0])
+    formData.append('logo', logoUrl)
     formData.append('data_content', JSON.stringify(data_content))
     formData.append('status', event.target.status.checked === true ? '1' : '0')
-    formData.append('file_old_name', event.target.file_old_name.value)
-    formData.append('file', event.target.file.files[0])
+    formData.append('file', fileUrl)
 
-    await axios.post(
-      endpointItems,
-      formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    ).then(res => {
+    await axios.post(endpointItems, formData)
+    .then(() => {
       window.location.href = "item-view.php";
     }).catch(err => {
       toastrAlert(err)

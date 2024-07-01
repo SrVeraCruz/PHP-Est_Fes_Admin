@@ -48,27 +48,14 @@ require_once 'includes/header.php';
           />
         </div>
 
-        <div class="flex sm:flex-col gap-2">
-          <div class="flex flex-col w-full">
-            <label class="font-bold">Slug(URL):</label>
-            <input 
-              type="text" 
-              name="slug" 
-              placeholder="e.g: news-ret-cart" 
-              class="shadow-md p-3 outline-none 
-                text-[.9rem] rounded-md
-              "
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <label class="font-bold">Meta title:</label>
-            <input 
-              type="text" 
-              name="meta_title" 
-              placeholder="e.g: News | Est-Fes" 
-              class="shadow-md p-3 outline-none rounded-md"
-            />
-          </div>
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Meta title:</label>
+          <input 
+            type="text" 
+            name="meta_title" 
+            placeholder="e.g: News | Est-Fes" 
+            class="shadow-md p-3 outline-none rounded-md"
+          />
         </div>
 
         <div class="flex flex-col w-full">

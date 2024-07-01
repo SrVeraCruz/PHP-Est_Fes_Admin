@@ -16,19 +16,19 @@ class ItemService
     }
   }
 
-  public static function POST($data, $file)
+  public static function POST($data)
   {
     try {
-      echo Item::insertOne($data, $file);
+      echo Item::insertOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }
   }
 
-  public static function UPDATE($data, $file)
+  public static function UPDATE($data)
   {
     try {
-      echo Item::updateOne($data, $file);
+      echo Item::updateOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }

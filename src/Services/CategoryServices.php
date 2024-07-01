@@ -17,19 +17,19 @@ class CategoryService
     }
   }
 
-  public static function POST($data, $file)
+  public static function POST($data)
   {
     try {
-      echo Category::insertOne($data, $file);
+      echo Category::insertOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }
   }
 
-  public static function UPDATE($data, $file)
+  public static function UPDATE($data)
   {
     try {
-      echo Category::updateOne($data, $file);
+      echo Category::updateOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }

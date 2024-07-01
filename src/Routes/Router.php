@@ -23,12 +23,12 @@ switch ($uri) {
         json_encode(UserService::GET());
       }
     } elseif ($method === 'POST') {
-      if (isset($_POST['update_user_id'])) {
-        json_encode(UserService::UPDATE($_POST, $_FILES));
-      } elseif (isset($_POST['delete_user_id'])) {
+      if (isset($_POST['update_id'])) {
+        json_encode(UserService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_id'])) {
         json_encode(UserService::DELETE($_POST));
       } else {
-        json_encode(UserService::POST($_POST, $_FILES));
+        json_encode(UserService::POST($_POST));
       }
     } else {
       sendNotAllowed();
@@ -43,9 +43,9 @@ switch ($uri) {
         json_encode(NewsService::GET());
       }
     } elseif ($method === 'POST') {
-      if (isset($_POST['update_news_id'])) {
+      if (isset($_POST['update_id'])) {
         json_encode(NewsService::UPDATE($_POST));
-      } elseif (isset($_POST['delete_news_id'])) {
+      } elseif (isset($_POST['delete_id'])) {
         json_encode(NewsService::DELETE($_POST));
       } else {
         json_encode(NewsService::POST($_POST));
@@ -63,9 +63,9 @@ switch ($uri) {
         json_encode(EventService::GET());
       }
     } elseif ($method === 'POST') {
-      if (isset($_POST['update_event_id'])) {
+      if (isset($_POST['update_id'])) {
         json_encode(EventService::UPDATE($_POST));
-      } elseif (isset($_POST['delete_event_id'])) {
+      } elseif (isset($_POST['delete_id'])) {
         json_encode(EventService::DELETE($_POST));
       } else {
         json_encode(EventService::POST($_POST));
@@ -103,12 +103,12 @@ switch ($uri) {
         json_encode(CategoryService::GET());
       }
     } elseif ($method === 'POST') {
-      if (isset($_POST['update_cat_id'])) {
-        json_encode(CategoryService::UPDATE($_POST, $_FILES));
+      if (isset($_POST['update_id'])) {
+        json_encode(CategoryService::UPDATE($_POST));
       } elseif (isset($_POST['delete_id'])) {
         json_encode(CategoryService::DELETE($_POST));
       } else {
-        json_encode(CategoryService::POST($_POST, $_FILES));
+        json_encode(CategoryService::POST($_POST));
       }
     } else {
       sendNotAllowed();
@@ -123,12 +123,12 @@ switch ($uri) {
         json_encode(ItemService::GET());
       }
     } elseif ($method === 'POST') {
-      if (isset($_POST['update_item_id'])) {
-        json_encode(ItemService::UPDATE($_POST, $_FILES));
-      } elseif (isset($_POST['delete_item_id'])) {
+      if (isset($_POST['update_id'])) {
+        json_encode(ItemService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_id'])) {
         json_encode(ItemService::DELETE($_POST));
       } else {
-        json_encode(ItemService::POST($_POST, $_FILES));
+        json_encode(ItemService::POST($_POST));
       }
     } else {
       sendNotAllowed();
@@ -139,7 +139,7 @@ switch ($uri) {
     require_once '../../middleware/redirect-user.php';
 
     if ($method === 'POST') {
-      json_encode(UserService::POST($_POST, $_FILES));
+      json_encode(UserService::POST($_POST));
     } else {
       sendNotAllowed();
     }

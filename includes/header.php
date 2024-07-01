@@ -41,6 +41,7 @@
     <?php include('aside.php') ?>
 
     <main 
+      id="main"
       class="p-4 md:ml-0 min-h-[calc(100vh-4.7rem)] w-full 
         min-w-0 flex flex-col gap-[2rem] justify-between
         <?= 

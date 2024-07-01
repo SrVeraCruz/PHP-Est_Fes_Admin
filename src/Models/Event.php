@@ -4,7 +4,6 @@ require_once '../config/db.php';
 class Event
 {
   private static $table = 'events';
-
   private static $pdo = null;
 
   private static function initConnection()
@@ -67,11 +66,12 @@ class Event
       return json_encode(['message_warning' => 'The content of the event is required']);
     } else {
 
-      $add_event_query = "INSERT INTO " . self::$table . " 
-      (title, content, date, time, location, slug, meta_title, file, status) 
-      VALUES (:title, :content, :date, :time, :location, :slug, :meta_title, :file, :status) LIMIT 1";
+      $add_query = "INSERT INTO " . self::$table . " 
+        (title, content, date, time, location, slug, meta_title, file, status) VALUES 
+        (:title, :content, :date, :time, :location, :slug, :meta_title, :file, :status) LIMIT 1"
+      ;
 
-      $stmt = self::$pdo->prepare($add_event_query);
+      $stmt = self::$pdo->prepare($add_query);
 
       $stmt->bindValue(':title', $data['title']);
       $stmt->bindValue(':content', $data['content']);
@@ -115,9 +115,11 @@ class Event
       return json_encode(['message_warning' => 'The content of the event is required']);
     } else {
 
-      $update_news_query = "UPDATE " . self::$table . " SET title = :title, content = :content, date = :date, time = :time, location = :location, slug = :slug, meta_title = :meta_title, file = :file, status = :status WHERE id = :id LIMIT 1";
+      $update_query = "UPDATE " . self::$table . " 
+        SET title = :title, content = :content, date = :date, time = :time, location = :location, slug = :slug, meta_title = :meta_title, file = :file, status = :status WHERE id = :id LIMIT 1"
+      ;
 
-      $stmt = self::$pdo->prepare($update_news_query);
+      $stmt = self::$pdo->prepare($update_query);
 
       $stmt->bindValue(':title', $data['title']);
       $stmt->bindValue(':content', $data['content']);
@@ -128,7 +130,7 @@ class Event
       $stmt->bindValue(':meta_title', $data['meta_title']);
       $stmt->bindValue(':file', $data['file']);
       $stmt->bindValue(':status', $data['status']);
-      $stmt->bindValue(':id', $data['update_event_id']);
+      $stmt->bindValue(':id', $data['update_id']);
       $success = $stmt->execute();
 
       if ($success) {
@@ -144,9 +146,9 @@ class Event
   {
     self::initConnection();
 
-    $delete_event_query = "DELETE FROM " . self::$table . " WHERE id = :id LIMIT 1";
-    $stmt = self::$pdo->prepare($delete_event_query);
-    $stmt->bindValue(':id', $data['delete_event_id']);
+    $delete_query = "DELETE FROM " . self::$table . " WHERE id = :id LIMIT 1";
+    $stmt = self::$pdo->prepare($delete_query);
+    $stmt->bindValue(':id', $data['delete_id']);
     $success = $stmt->execute();
 
     if ($success) {

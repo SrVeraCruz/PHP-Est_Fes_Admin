@@ -112,7 +112,11 @@ require_once 'includes/header.php';
               <div id="item">
                 <div id="element">
                   <label class="font-bold">Description</label>
-                  <textarea id="contentPage" name="content" class="summernote"></textarea>
+                  <textarea 
+                    id="contentPage" 
+                    name="content" 
+                    class="summernote"
+                  ></textarea>
                 </div>
               </div>
             </div>

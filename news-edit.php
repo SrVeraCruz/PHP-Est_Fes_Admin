@@ -49,34 +49,24 @@ require_once 'includes/header.php';
           />
         </div>
 
-        <div class="flex sm:flex-col gap-2">
-          <div class="flex flex-col w-full">
-            <label class="font-bold">Slug(URL):</label>
-            <input 
-              type="text"
-              id="slug"
-              name="slug" 
-              placeholder="e.g: news-ret-cart" 
-              class="shadow-md p-3 outline-none 
-                text-[.9rem] rounded-md
-              "
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <label class="font-bold">Meta title:</label>
-            <input 
-              type="text" 
-              id="meta_title"
-              name="meta_title" 
-              placeholder="e.g: News | Est-Fes" 
-              class="shadow-md p-3 outline-none rounded-md"
-            />
-          </div>
+        <div class="flex flex-col w-full">
+          <label class="font-bold">Meta title:</label>
+          <input 
+            type="text" 
+            id="metaTitle"
+            name="meta_title" 
+            placeholder="e.g: News | Est-Fes" 
+            class="shadow-md p-3 outline-none rounded-md"
+          />
         </div>
 
         <div class="flex flex-col w-full">
           <label class="font-bold">Thumbnail:</label>
-          <input type="hidden" id="old_thumbnail" name="old_thumbnail" >
+          <input 
+            type="hidden" 
+            id="oldThumbnail" 
+            name="old_thumbnail" 
+          />
           <input 
             type="file" 
             id="thumbnail"
@@ -107,7 +97,7 @@ require_once 'includes/header.php';
           </div>
           <div class="flex flex-col w-full">
             <label class="font-bold">File:</label>
-            <input type="hidden" id="old_file" name="old_file" >
+            <input type="hidden" id="oldFile" name="old_file" >
             <input 
               type="file" 
               id="file"

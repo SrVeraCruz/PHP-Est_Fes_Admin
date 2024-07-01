@@ -4,7 +4,6 @@ require_once '../config/db.php';
 class News
 {
   private static $table = 'news';
-
   private static $pdo = null;
 
   private static function initConnection()
@@ -53,9 +52,6 @@ class News
     if (!trim($data['title'])) {
       http_response_code(400);
       return json_encode(['message_warning' => 'Please enter the news title']);
-    } elseif (!trim($data['slug'])) {
-      http_response_code(400);
-      return json_encode(['message_warning' => 'Please enter the slug of the news']);
     } elseif (!trim($data['meta_title'])) {
       http_response_code(400);
       return json_encode(['message_warning' => 'Please enter the news meta-title']);
@@ -96,9 +92,6 @@ class News
     if (!trim($data['title'])) {
       http_response_code(400);
       return json_encode(['message_warning' => 'Please enter the news title']);
-    } elseif (!trim($data['slug'])) {
-      http_response_code(400);
-      return json_encode(['message_warning' => 'Please enter the slug of the news']);
     } elseif (!trim($data['meta_title'])) {
       http_response_code(400);
       return json_encode(['message_warning' => 'Please enter the news meta-title']);
@@ -107,9 +100,11 @@ class News
       return json_encode(['message_warning' => 'The content of the news is required']);
     } else {
 
-      $update_news_query = "UPDATE " . self::$table . " SET title = :title, content = :content, slug = :slug, meta_title = :meta_title, thumbnail = :thumbnail, file = :file, status = :status WHERE id = :id LIMIT 1";
+      $update_query = "UPDATE " . self::$table . " 
+        SET title = :title, content = :content, slug = :slug, meta_title = :meta_title, thumbnail = :thumbnail, file = :file, status = :status WHERE id = :id LIMIT 1"
+      ;
 
-      $stmt = self::$pdo->prepare($update_news_query);
+      $stmt = self::$pdo->prepare($update_query);
 
       $stmt->bindValue(':title', $data['title']);
       $stmt->bindValue(':content', $data['content']);
@@ -118,7 +113,7 @@ class News
       $stmt->bindValue(':thumbnail', $data['thumbnail']);
       $stmt->bindValue(':file', $data['file']);
       $stmt->bindValue(':status', $data['status']);
-      $stmt->bindValue(':id', $data['update_news_id']);
+      $stmt->bindValue(':id', $data['update_id']);
       $success = $stmt->execute();
 
       if ($success) {
@@ -134,9 +129,11 @@ class News
   {
     self::initConnection();
 
-    $delete_news_query = "DELETE FROM " . self::$table . " WHERE id = :id LIMIT 1";
-    $stmt = self::$pdo->prepare($delete_news_query);
-    $stmt->bindValue(':id', $data['delete_news_id']);
+    $delete_query = "DELETE FROM " . self::$table . " 
+      WHERE id = :id LIMIT 1"
+    ;
+    $stmt = self::$pdo->prepare($delete_query);
+    $stmt->bindValue(':id', $data['delete_id']);
     $success = $stmt->execute();
 
     if ($success) {
