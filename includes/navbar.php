@@ -26,7 +26,7 @@
               <a href="setting.php">
                 <img 
                   class="h-full w-full object-cover" 
-                  src="uploads/users/<?= $_SESSION['auth_user']['user_img'] ?>" 
+                  src="<?= $_SESSION['auth_user']['user_img'] ?>" 
                   alt="<?= $_SESSION['auth_user']['user_name'] ?>"
                 >
               </a>
