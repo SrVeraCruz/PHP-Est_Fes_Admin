@@ -61,7 +61,7 @@ require_once 'includes/header.php';
         <div>
           <span>
             Don't have an account?
-            <a href="register.php" class="font-bold">Sign Up</a>
+            <a href="register.php" class="underline">Sign Up</a>
           </span>
         </div>
       </div>

@@ -4,6 +4,7 @@ require_once '../config/db.php';
 class User
 {
   private static $table = "users";
+  private static $newsletter_table = "newsletter";
   private static $pdo = null;
 
   private static function initConnection()
@@ -237,12 +238,27 @@ class User
   {
     self::initConnection();
 
+    $email_query = 'SELECT email FROM ' . self::$table . ' WHERE id = :id LIMIT 1';
+    $stmt = self::$pdo->prepare($email_query);
+    $stmt->bindValue(':id', $data['delete_id']);
+    $stmt->execute();
+    
+    $email = '';
+    if ($stmt->rowCount() > 0) {
+      $email = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     $delete_query = "DELETE FROM " . self::$table . " WHERE id = :id LIMIT 1";
     $stmt = self::$pdo->prepare($delete_query);
     $stmt->bindValue(':id', $data['delete_id']);
     $success = $stmt->execute();
 
     if ($success) {
+      $delete_subscription_query = "DELETE FROM " . self::$newsletter_table . " WHERE email = :email LIMIT 1";
+      $stmt = self::$pdo->prepare($delete_subscription_query);
+      $stmt->bindValue(':email', $email['email']);
+      $success = $stmt->execute();
+
       http_response_code(200);
       return json_encode(['message_success' => 'User deleted successfully']);
     } else {

@@ -581,7 +581,7 @@ if(logoutForm) {
         toastrAlert(err)
       })
   }
- }
+}
 
 
 /*  Dashboard Page */ 

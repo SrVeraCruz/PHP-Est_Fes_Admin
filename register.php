@@ -138,7 +138,7 @@ require_once 'includes/header.php';
         <div>
           <span>
             Alread have an account?
-            <a href="login.php" class="font-bold">Sign In</a>
+            <a href="login.php" class="underline">Sign In</a>
           </span>
         </div>
       </div>
