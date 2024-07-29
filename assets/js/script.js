@@ -669,6 +669,7 @@ if(pageName === 'user-view.php') {
           <td>${user.fname}</td>
           <td>${user.lname}</td>
           <td>${user.email}</td>
+          <td>${user.status === '0' ? 'Active' : 'Blocked'}</td>
           <td>${getUserRole(user.role_as)}</td>
           <td class="flex gap-1.5">
             <a 

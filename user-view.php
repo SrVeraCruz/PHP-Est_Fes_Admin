@@ -31,6 +31,7 @@ require_once 'includes/header.php';
           <th>Last Name</th>
           <th>Email</th>
           <th>Roles</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
