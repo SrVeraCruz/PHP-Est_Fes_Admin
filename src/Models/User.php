@@ -268,7 +268,7 @@ class User
 
   public static function authenticate($email, $password)
   {
-
+    session_start();
     self::initConnection();
 
     if (!$email) {
@@ -295,7 +295,7 @@ class User
 
         if (password_verify($password, $hash_password)) {
           // Role Verification
-          if ($user_data['role_as'] === '1' || $user_data['role_as'] === '2') {
+          if ($user_data['role_as'] === 1 || $user_data['role_as'] === 2) {
             // Redirect to Dashboard
             $_SESSION['auth'] = true;
             $_SESSION['auth_role'] = $user_data['role_as']; // 0=user, 1=admin, 2=super_admin
@@ -311,7 +311,7 @@ class User
           } else {
             // No Permition to access Dashboard
             http_response_code(400);
-            return json_encode(['message_error' => 'Permission denied. Please visite the school website']);
+            return json_encode(['message_error' => 'Permission denied. Please contact the support']);
           }
         } else {
           // Credentials does not match

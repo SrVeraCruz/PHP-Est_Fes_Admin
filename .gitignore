@@ -6,3 +6,4 @@ uploads
 
 # environement
 .env
+docker-compose.yml

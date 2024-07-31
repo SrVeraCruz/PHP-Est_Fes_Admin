@@ -1,14 +1,10 @@
 <?php
-require_once '../../vendor/autoload.php';
 require_once '../Services/UserServices.php';
 require_once '../Services/NewsServices.php';
 require_once '../Services/EventServices.php';
 require_once '../Services/NewsletterServices.php';
 require_once '../Services/CategoryServices.php';
 require_once '../Services/ItemServices.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable('../../');
-$dotenv->load();
 
 header("Content-Type: application/json");
 $uri = $_GET['url'];
@@ -136,7 +132,7 @@ switch ($uri) {
     break;
 
   case 'api/users/register':
-    require_once '../../middleware/redirect-user.php';
+    // require_once '../../middleware/redirect-user.php';
 
     if ($method === 'POST') {
       json_encode(UserService::POST($_POST));
@@ -146,7 +142,7 @@ switch ($uri) {
     break;
 
   case 'api/users/login':
-    require_once '../../middleware/redirect-user.php';
+    // require_once '../../middleware/redirect-user.php';
 
     if ($method === 'POST') {
       if (isset($_POST['email']) && isset($_POST['password'])) {
