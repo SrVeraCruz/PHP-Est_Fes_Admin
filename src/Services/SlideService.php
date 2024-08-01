@@ -1,15 +1,16 @@
 <?php
-require_once '../Models/Newsletter.php';
 
-class NewsletterService
+require_once '../Models/Slide.php';
+
+class SlideService
 {
   public static function GET($id = null)
   {
     try {
       if ($id) {
-        echo Newsletter::getOne($id);
+        echo Slide::getOne($id);
       } else {
-        echo Newsletter::getAll();
+        echo Slide::getAll();
       }
     } catch (Exception $err) {
       self::sendError($err->getMessage());
@@ -19,7 +20,7 @@ class NewsletterService
   public static function POST($data)
   {
     try {
-      echo Newsletter::insertOne($data);
+      echo Slide::insertOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }
@@ -28,7 +29,7 @@ class NewsletterService
   public static function UPDATE($data)
   {
     try {
-      echo Newsletter::updateOne($data);
+      echo Slide::updateOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }
@@ -37,7 +38,7 @@ class NewsletterService
   public static function DELETE($data)
   {
     try {
-      echo Newsletter::deleteOne($data);
+      echo Slide::deleteOne($data);
     } catch (Exception $err) {
       self::sendError($err->getMessage());
     }

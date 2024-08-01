@@ -1,5 +1,6 @@
 /* Global Variables */ 
-const baseUrl = 'http://localhost:8081/';
+// const baseUrl = 'http://localhost:8081/';
+const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
 
 const endpointLogin = `${baseUrl}api/users/login`;
 const endpointLogout = `${baseUrl}api/users/logout`;
@@ -10,6 +11,7 @@ const endpointEvents = `${baseUrl}api/events`;
 const endpointNewsletter = `${baseUrl}api/newsletter`;
 const endpointCategories = `${baseUrl}api/categories`;
 const endpointItems = `${baseUrl}api/items`;
+const endpointSlides = `${baseUrl}api/slides`;
 
 const endpointImageCld = 'https://api.cloudinary.com/v1_1/dbfaih2du/image/upload';
 const endpointRawCld = 'https://api.cloudinary.com/v1_1/dbfaih2du/raw/upload';
@@ -162,6 +164,16 @@ const fetchAllItems = async () => {
 
 const fetchOneItem = async (id) => {
   return await axios.get(`${endpointItems}?id=${id}`)
+  .then(res => {
+    return res.data
+  })
+  .catch(err => {
+    console.error(err.message)
+  })
+}
+
+const fetchAllSlides = async () => {
+  return await axios.get(endpointSlides)
     .then(res => {
       return res.data
     })
@@ -1758,4 +1770,144 @@ if(pageName === 'item-edit.php') {
       showItemData(item)
     })
   })
+}
+
+
+// Categories Page  
+//////////////////////////////////////////////////////////
+if(pageName === 'slide-view.php') {
+  const formSlide = document.getElementById('formSlide');
+
+  const showSlides = (slides) => {
+    const mainSlide = document.getElementById('mainSlide')
+    const secondarySlide = document.getElementById('secondarySlide')
+
+    const mainSlideData = slides.filter((slide) => slide.type === 'main')
+    const secondarySlideData = slides.filter((slide) => slide.type === 'secondary')
+
+    if (mainSlideData.length > 0) {
+      mainSlide.innerHTML = ''
+      mainSlideData.forEach(slide => {
+        mainSlide.innerHTML += `
+          <div class="w-max">
+            <div class="!max-w-20 text-ellipsis overflow-hidden flex flex-col items-center gap-1">
+              <div class="size-20 shadow-md overflow-hidden rounded-md">
+                <img 
+                  src="${slide.image}" 
+                  alt="Main slide" 
+                  class="h-full w-full object-cover"
+                >
+              </div>
+              <span class="text-xs text-softDark">${slide.title}</span>
+            </div>
+          </div>
+        `
+      })
+      // addEditElementEvent('cat')
+      // addDeleteElementEvent('cat')
+    }
+
+    if (secondarySlideData.length > 0) {
+      secondarySlide.innerHTML = ''
+      secondarySlideData.forEach(slide => {
+        secondarySlide.innerHTML += `
+          <div class="w-max">
+            <div class="!max-w-20 text-ellipsis overflow-hidden flex flex-col items-center gap-1">
+              <div class="size-20 shadow-md overflow-hidden rounded-md">
+                <img 
+                  src="${slide.image}" 
+                  alt="Main slide" 
+                  class="h-full w-full object-cover"
+                >
+              </div>
+              <span class="text-xs text-softDark">${slide.title}</span>
+            </div>
+          </div>
+        `
+      })
+      // addEditElementEvent('cat')
+      // addDeleteElementEvent('cat')
+    }
+  }
+
+  fetchAllSlides().then(slides => {
+    showSlides(slides)
+  })
+
+  // Add Item on slide
+  formSlide.onsubmit = async (event) => {
+    event.preventDefault();
+
+    let imageUrl = ''
+    const image = event.target.image.files[0]
+
+    if(image) {
+      imageUrl = await handleUpload(image)
+    }
+
+    const formData = new FormData();
+    formData.append('type', event.target.type.value)
+    formData.append('title', event.target.title.value)
+    formData.append('image', imageUrl)
+    formData.append('status', event.target.status.checked === true ? '1' : '0')
+
+    await axios.post(endpointSlides, formData)
+    .then(() => {
+      formSlide.reset()
+      fetchAllSlides().then(slides => {
+        showSlides(slides)
+      })
+    }).catch(err => {
+      toastrAlert(err)
+    })
+  }
+
+  // Edit Category
+  // function showCatToEdit(cat) {
+  //   window.location.href = "#"
+
+  //   document.getElementById("catLabel").innerText = `Edit category ${cat.name}`
+  //   document.getElementById("catName").value = cat.name
+  //   document.getElementById("selectCat").value = cat.parent_category_id
+  //   document.getElementById("catTitle").value = cat.title
+  //   document.getElementById("catStatus").checked = cat.navbar_status === '1' ? true : false
+  //   document.getElementById("catBtnSave").innerText = "Update"
+  //   catBtnCancel.classList.remove('hidden')
+  //   catBtnCancel.onclick = () => {
+  //     location.reload()
+  //   }
+
+  //   toggleCheckboxValueEvent()
+
+  //   formCat.onsubmit = async (event) => {
+  //     event.preventDefault();
+
+  //     let logoUrl = cat.logo || ''
+  //     const logo = event.target.logo.files[0]
+
+  //     if(logo) {
+  //       logoUrl = await handleUpload(logo)
+  //     }
+
+  //     const slug = formatSlug(event.target.title.value)
+
+  //     const formData = new FormData();
+  //     formData.append('update_id', cat.id)
+  //     formData.append('name', event.target.name.value)
+  //     formData.append('parent_category_id', event.target.parent_category_id.value)
+  //     formData.append('title', event.target.title.value)
+  //     formData.append('slug', slug)
+  //     formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
+  //     formData.append('logo', logoUrl)
+
+  //     await axios.post(endpointCategories, formData)
+  //     .then(() => {
+  //       // formCat.reset()
+  //       // fetchAllCats();
+  //       location.reload()
+  //     }).catch(err => {
+  //       toastrAlert(err)
+  //     })
+  //   }
+  // }
 }

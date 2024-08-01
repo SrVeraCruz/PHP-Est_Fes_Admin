@@ -1,10 +1,11 @@
 <?php
-require_once '../Services/UserServices.php';
-require_once '../Services/NewsServices.php';
-require_once '../Services/EventServices.php';
-require_once '../Services/NewsletterServices.php';
-require_once '../Services/CategoryServices.php';
-require_once '../Services/ItemServices.php';
+require_once '../Services/UserService.php';
+require_once '../Services/NewsService.php';
+require_once '../Services/EventService.php';
+require_once '../Services/NewsletterService.php';
+require_once '../Services/CategoryService.php';
+require_once '../Services/ItemService.php';
+require_once '../Services/SlideService.php';
 
 header("Content-Type: application/json");
 $uri = $_GET['url'];
@@ -125,6 +126,26 @@ switch ($uri) {
         json_encode(ItemService::DELETE($_POST));
       } else {
         json_encode(ItemService::POST($_POST));
+      }
+    } else {
+      sendNotAllowed();
+    }
+    break;
+
+  case 'api/slides':
+    if ($method === 'GET') {
+      if (isset($_GET['id'])) {
+        json_encode(SlideService::GET($_GET['id']));
+      } else {
+        json_encode(SlideService::GET());
+      }
+    } elseif ($method === 'POST') {
+      if (isset($_POST['update_id'])) {
+        json_encode(SlideService::UPDATE($_POST));
+      } elseif (isset($_POST['delete_id'])) {
+        json_encode(SlideService::DELETE($_POST));
+      } else {
+        json_encode(SlideService::POST($_POST));
       }
     } else {
       sendNotAllowed();
