@@ -1951,10 +1951,7 @@ if(pageName === 'slide-view.php') {
 
       await axios.post(endpointSlides, formData)
       .then(() => {
-        formSlide.reset()
-        fetchAllItemsSlides().then(slides => {
-          showSlides(slides)
-        })
+        location.reload()
       }).catch(err => {
         toastrAlert(err)
       })

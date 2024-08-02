@@ -100,8 +100,10 @@ require_once 'includes/header.php';
   
   <div>
     <h3 class="font-bold text-sm text-dark/80">Secondary Slide</h3>
-    <div id="secondarySlide" class="w-full border-t-2 py-2">
-      <span class="text-sm text-softDark">No data yet</span>
+    <div class="w-full border-t-2 py-2 overflow-hidden">
+      <div id="secondarySlide" class="flex gap-3 overflow-auto">
+        <span class="text-sm text-softDark">No data yet</span>
+      </div>
     </div>
   </div>
 
