@@ -172,15 +172,26 @@ const fetchOneItem = async (id) => {
   })
 }
 
-const fetchAllSlides = async () => {
+const fetchAllItemsSlides = async () => {
   return await axios.get(endpointSlides)
-    .then(res => {
-      return res.data
-    })
-    .catch(err => {
-      console.error(err.message)
-    })
+  .then(res => {
+    return res.data
+  })
+  .catch(err => {
+    console.error(err.message)
+  })
 }
+
+const fetchOneItemSlide = async (id) => {
+  return await axios.get(`${endpointSlides}?id=${id}`)
+  .then(res => {
+    return res.data
+  })
+  .catch(err => {
+    console.error(err.message)
+  })
+}
+
 
 const handleUpload = async (file) => {
   const data = new FormData()
@@ -257,7 +268,7 @@ const appendConfirmDeleteBox = () => {
     >
 
       <h2>
-        Do you want to unsubscribe 
+        Do you want to delete 
         <span id="confirmDelTitle" class="font-semibold">
           Item name
         </span>
@@ -392,6 +403,12 @@ const addDeleteElementEvent = (name) => {
           });
           break;
 
+        case 'slide':
+          fetchOneItemSlide(btn.value).then(item => {
+            showInfosToDelete(item, endpointSlides)
+          });
+          break;
+
         default:
           console.log('invalid delete event name')
           break;
@@ -417,6 +434,12 @@ const addEditElementEvent = (name) => {
           })
           break
 
+        case 'slide':
+          fetchOneItemSlide(btn.value).then(item => {
+            showSlideToEdit(item)
+          })
+          break
+
         default:
           console.log('invalid edit event name')
           break
@@ -429,7 +452,8 @@ const showInfosToDelete = (data, endpoint) => {
   document.getElementById("confirmDelTitle").innerText = 
     data.email ||
     data.name || 
-    data.title
+    data.title ||
+    'this item'
   ;
 
   document.getElementById("confirmDelId").value = data.id
@@ -610,14 +634,14 @@ if(pageName === 'index.php') {
 
   fetchAllUsers().then(users => {
     if (users.length) {
-      const tUsers = users.filter(user => {return user.status !== '1'})
+      const tUsers = users.filter(user => {return user.status !== 1})
       usersQte.innerText = tUsers.length
     }
   })
 
   fetchAllUsers().then(users => {
     if (users.length) {
-      const bUsers = users.filter(user => {return user.status === '1'})
+      const bUsers = users.filter(user => {return user.status === 1})
       usersBlockQte.innerText = bUsers.length
     }
   })
@@ -665,11 +689,11 @@ if(pageName === 'user-view.php') {
     tableUser.innerHTML = ''
     
     const getUserRole = (userRole) => {
-      if (userRole === '0') {
+      if (userRole === 0) {
         return 'User'
-      } else if (userRole === '1') {
+      } else if (userRole === 1) {
         return 'Admin'
-      } else if (userRole === '2') {
+      } else if (userRole === 2) {
         return 'Super Admin'
       }
     }
@@ -677,12 +701,12 @@ if(pageName === 'user-view.php') {
     if (users) {
       users.forEach(user => {
         tableUser.innerHTML += `
-        <tr class="${user.role_as === '2' ? 'hidden' : ''}">
+        <tr class="${user.role_as === 2 ? 'hidden' : ''}">
           <td>${user.fname}</td>
           <td>${user.lname}</td>
           <td>${user.email}</td>
           <td>${getUserRole(user.role_as)}</td>
-          <td>${user.status === '0' ? 'Active' : 'Blocked'}</td>
+          <td>${user.status === 0 ? 'Active' : 'Blocked'}</td>
           <td class="flex gap-1.5">
             <a 
               href="user-edit.php?id=${user.id}" 
@@ -705,7 +729,7 @@ if(pageName === 'user-view.php') {
             edit
           </a>
           
-          <?php if ($_SESSION['auth_role'] === '2') : ?>
+          <?php if ($_SESSION['auth_role'] === 2) : ?>
           <button 
             id="deleteBtn" 
             value="${user.id}" 
@@ -866,7 +890,7 @@ if(pageName === 'news-view.php') {
           <tr>
             <td>${news.title}</td>
             <td>${news.content}</td>
-            <td>${news.status === '0' ? 'visible' : 'hidden'}</td>
+            <td>${news.status === 0 ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <a 
                 href="news-edit.php?id=${news.id}" 
@@ -889,7 +913,7 @@ if(pageName === 'news-view.php') {
                 edit
               </a>
   
-              <?php if ($_SESSION['auth_role'] === '2') : ?>
+              <?php if ($_SESSION['auth_role'] === 2) : ?>
                 <button 
                   id="deleteBtn" 
                   value="${news.id}" 
@@ -994,7 +1018,7 @@ if(pageName === 'news-edit.php') {
     document.getElementById('metaTitle').value = news.meta_title
     document.getElementById('contentPage').textContent = news.content
     document.getElementById('oldFile').value = news.file || ''
-    document.getElementById('status').checked = news.status === '1' ? true : false
+    document.getElementById('status').checked = news.status === 1 ? true : false
 
     toggleCheckboxValueEvent()
 
@@ -1066,7 +1090,7 @@ if(pageName === 'event-view.php') {
             <td>${event.date}</td>
             <td>${event.time}</td>
             <td>${event.location}</td>
-            <td>${event.status === '0' ? 'visible' : 'hidden'}</td>
+            <td>${event.status === 0 ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <a 
                 href="event-edit.php?id=${event.id}" 
@@ -1089,7 +1113,7 @@ if(pageName === 'event-view.php') {
                 edit
               </a>
   
-              <?php if ($_SESSION['auth_role'] === '2') : ?>
+              <?php if ($_SESSION['auth_role'] === 2) : ?>
                 <button 
                   id="deleteBtn" 
                   value="${event.id}" 
@@ -1284,7 +1308,7 @@ if(pageName === 'newsletter-view.php') {
                 edit
               </button>
 
-              <?php if ($_SESSION['auth_role'] === '2') : ?>
+              <?php if ($_SESSION['auth_role'] === 2) : ?>
                 <button 
                   id="deleteBtn" 
                   value="${sub.id}" 
@@ -1358,7 +1382,7 @@ if(pageName === 'newsletter-view.php') {
     subEmail.disabled = true
     subEmail.classList.add('opacity-50')
 
-    document.getElementById("subStatus").checked = sub.status === '1' ? true : false
+    document.getElementById("subStatus").checked = sub.status === 1 ? true : false
     document.getElementById("subBtnSave").innerText = "Update"
     subBtnCancel.classList.remove('hidden')
     subBtnCancel.onclick = () => {
@@ -1401,7 +1425,7 @@ if(pageName === 'category-view.php') {
           <tr>
             <td>${cat.name}</td>
             <td>${cat.parent_name !== null ? cat.parent_name : ''}</td>
-            <td>${cat.status === '0' ? 'visible' : 'hidden'}</td>
+            <td>${cat.status === 0 ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <button 
                 id="editBtn" 
@@ -1425,7 +1449,7 @@ if(pageName === 'category-view.php') {
                 edit
               </button>
 
-              <?php if ($_SESSION['auth_role'] === '2') : ?>
+              <?php if ($_SESSION['auth_role'] === 2) : ?>
                 <button 
                   id="deleteBtn" 
                   value="${cat.id}" 
@@ -1569,7 +1593,7 @@ if(pageName === 'item-view.php') {
             <td>${item.name}</td>
             <td>${item.title}</td>
             <td>${item.category_name}</td>
-            <td>${item.status === '0' ? 'visible' : 'hidden'}</td>
+            <td>${item.status === 0 ? 'visible' : 'hidden'}</td>
             <td class="flex gap-1.5">
               <a 
                 href="item-edit.php?id=${item.id}" 
@@ -1592,7 +1616,7 @@ if(pageName === 'item-view.php') {
                 edit
               </a>
   
-              <?php if ($_SESSION['auth_role'] === '2') : ?>
+              <?php if ($_SESSION['auth_role'] === 2) : ?>
                 <button 
                   id="deleteBtn" 
                   value="${item.id}" 
@@ -1782,55 +1806,85 @@ if(pageName === 'slide-view.php') {
     const mainSlide = document.getElementById('mainSlide')
     const secondarySlide = document.getElementById('secondarySlide')
 
-    const mainSlideData = slides.filter((slide) => slide.type === 'main')
-    const secondarySlideData = slides.filter((slide) => slide.type === 'secondary')
+    const mainSlideData = slides.filter((item) => item.type === 'main')
+    const secondarySlideData = slides.filter((item) => item.type === 'secondary')
 
     if (mainSlideData.length > 0) {
       mainSlide.innerHTML = ''
-      mainSlideData.forEach(slide => {
+      mainSlideData.forEach(item => {
         mainSlide.innerHTML += `
           <div class="w-max">
             <div class="!max-w-20 text-ellipsis overflow-hidden flex flex-col items-center gap-1">
+              <div class="flex gap-2">
+                <button id="editBtn" value="${item.id}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 stroke-softDark">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                </button>
+                
+                <?php if ($_SESSION['auth_role'] === 2) : ?>
+                  <button id="deleteBtn" value="${item.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 stroke-softDark">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                  </button>
+                <?php endif ?>
+              </div>
               <div class="size-20 shadow-md overflow-hidden rounded-md">
                 <img 
-                  src="${slide.image}" 
+                  src="${item.image}" 
                   alt="Main slide" 
                   class="h-full w-full object-cover"
                 >
               </div>
-              <span class="text-xs text-softDark">${slide.title}</span>
+              <span class="text-xs text-softDark">${item.title}</span>
             </div>
           </div>
         `
       })
-      // addEditElementEvent('cat')
-      // addDeleteElementEvent('cat')
+      addEditElementEvent('slide')
+      addDeleteElementEvent('slide')
     }
 
     if (secondarySlideData.length > 0) {
       secondarySlide.innerHTML = ''
-      secondarySlideData.forEach(slide => {
+      secondarySlideData.forEach(item => {
         secondarySlide.innerHTML += `
           <div class="w-max">
             <div class="!max-w-20 text-ellipsis overflow-hidden flex flex-col items-center gap-1">
+              <div class="flex gap-2">
+                <button id="editBtn" value="${item.id}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 stroke-softDark">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                </button>
+                
+                <?php if ($_SESSION['auth_role'] === 2) : ?>
+                  <button id="deleteBtn" value="${item.id}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 stroke-softDark">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                  </button>
+                <?php endif ?>
+              </div>
               <div class="size-20 shadow-md overflow-hidden rounded-md">
                 <img 
-                  src="${slide.image}" 
+                  src="${item.image}" 
                   alt="Main slide" 
                   class="h-full w-full object-cover"
                 >
               </div>
-              <span class="text-xs text-softDark">${slide.title}</span>
+              <span class="text-xs text-softDark">${item.title}</span>
             </div>
           </div>
         `
       })
-      // addEditElementEvent('cat')
-      // addDeleteElementEvent('cat')
+      addEditElementEvent('slide')
+      addDeleteElementEvent('slide')
     }
   }
 
-  fetchAllSlides().then(slides => {
+  fetchAllItemsSlides().then(slides => {
     showSlides(slides)
   })
 
@@ -1854,7 +1908,7 @@ if(pageName === 'slide-view.php') {
     await axios.post(endpointSlides, formData)
     .then(() => {
       formSlide.reset()
-      fetchAllSlides().then(slides => {
+      fetchAllItemsSlides().then(slides => {
         showSlides(slides)
       })
     }).catch(err => {
@@ -1862,52 +1916,48 @@ if(pageName === 'slide-view.php') {
     })
   }
 
-  // Edit Category
-  // function showCatToEdit(cat) {
-  //   window.location.href = "#"
+  // Edit Item slide
+  function showSlideToEdit(item) {
+    window.location.href = "#"
 
-  //   document.getElementById("catLabel").innerText = `Edit category ${cat.name}`
-  //   document.getElementById("catName").value = cat.name
-  //   document.getElementById("selectCat").value = cat.parent_category_id
-  //   document.getElementById("catTitle").value = cat.title
-  //   document.getElementById("catStatus").checked = cat.navbar_status === '1' ? true : false
-  //   document.getElementById("catBtnSave").innerText = "Update"
-  //   catBtnCancel.classList.remove('hidden')
-  //   catBtnCancel.onclick = () => {
-  //     location.reload()
-  //   }
+    document.getElementById("slideLabel").innerText = `Edit slide type`
+    document.getElementById("slideType").value = item.type
+    document.getElementById("slideTitle").value = item.title
+    document.getElementById("slideStatus").checked = item.status === 1 ? true : false
+    document.getElementById("slideBtnSave").innerText = "Update"
+    slideBtnCancel.classList.remove('hidden')
+    slideBtnCancel.onclick = () => {
+      location.reload()
+    }
 
-  //   toggleCheckboxValueEvent()
+    toggleCheckboxValueEvent()
 
-  //   formCat.onsubmit = async (event) => {
-  //     event.preventDefault();
+    formSlide.onsubmit = async (event) => {
+      event.preventDefault();
 
-  //     let logoUrl = cat.logo || ''
-  //     const logo = event.target.logo.files[0]
+      let imageUrl = item.image || ''
+      const image = event.target.image.files[0]
 
-  //     if(logo) {
-  //       logoUrl = await handleUpload(logo)
-  //     }
+      if(image) {
+        imageUrl = await handleUpload(image)
+      }
 
-  //     const slug = formatSlug(event.target.title.value)
+      const formData = new FormData();
+      formData.append('update_id', item.id)
+      formData.append('type', event.target.type.value)
+      formData.append('title', event.target.title.value)
+      formData.append('image', imageUrl)
+      formData.append('status', event.target.status.checked === true ? '1' : '0')
 
-  //     const formData = new FormData();
-  //     formData.append('update_id', cat.id)
-  //     formData.append('name', event.target.name.value)
-  //     formData.append('parent_category_id', event.target.parent_category_id.value)
-  //     formData.append('title', event.target.title.value)
-  //     formData.append('slug', slug)
-  //     formData.append('navbar_status', event.target.navbar_status.checked === true ? '1' : '0')
-  //     formData.append('logo', logoUrl)
-
-  //     await axios.post(endpointCategories, formData)
-  //     .then(() => {
-  //       // formCat.reset()
-  //       // fetchAllCats();
-  //       location.reload()
-  //     }).catch(err => {
-  //       toastrAlert(err)
-  //     })
-  //   }
-  // }
+      await axios.post(endpointSlides, formData)
+      .then(() => {
+        formSlide.reset()
+        fetchAllItemsSlides().then(slides => {
+          showSlides(slides)
+        })
+      }).catch(err => {
+        toastrAlert(err)
+      })
+    }
+  }
 }

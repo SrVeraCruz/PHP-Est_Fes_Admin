@@ -12,7 +12,7 @@ require_once 'includes/header.php';
     <h1 class=" text-[2rem] text-dark/75  font-semibold">
       Slides
     </h1>
-    <ul class=" text-dark/65 flex gap-1">
+    <ul id="pageIndicator" class=" text-dark/65 flex gap-1">
       <li>
         <a href="index.php">Dashboard</a>
       </li>/
@@ -27,7 +27,7 @@ require_once 'includes/header.php';
       <div class="flex flex-col gap-4">
         
         <div>
-          <label>Slide type</label>
+          <label id="slideLabel">Slide type</label>
           <select id="slideType" name="type">
             <option value="">Select type</option>
             <option value="main">Main</option>
@@ -47,7 +47,7 @@ require_once 'includes/header.php';
           </div>
           <div class="flex flex-col w-full">
             <label>Image</label>
-            <input type="file" name="image">
+            <input id="slideImage" type="file" name="image">
           </div>
         </div>
 
@@ -71,7 +71,7 @@ require_once 'includes/header.php';
       <div>
         <button 
           type="button" 
-          id="catBtnCancel" 
+          id="slideBtnCancel" 
           class="btn-default hidden"
         >
           Cancel
@@ -79,8 +79,8 @@ require_once 'includes/header.php';
 
         <button 
           type="submit" 
-          id="catBtnSave" 
-          name="add_category_btn" 
+          id="slideBtnSave" 
+          name="add_item_btn" 
           class="btn-primary self-start"
         >
           Add
