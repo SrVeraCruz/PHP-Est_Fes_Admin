@@ -1,6 +1,6 @@
 /* Global Variables */ 
-// const baseUrl = 'http://localhost:8081/';
-const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
+const baseUrl = 'http://localhost:8081/';
+// const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
 
 const endpointLogin = `${baseUrl}api/users/login`;
 const endpointLogout = `${baseUrl}api/users/logout`;
@@ -631,6 +631,7 @@ if(pageName === 'index.php') {
   const subscriptionsQte = document.getElementById('subscriptionsQte')
   const catsQte = document.getElementById('catsQte')
   const itemsQte = document.getElementById('itemsQte')
+  const itemsSlidesQte = document.getElementById('itemsSlidesQte')
 
   fetchAllUsers().then(users => {
     if (users.length) {
@@ -673,6 +674,12 @@ if(pageName === 'index.php') {
   fetchAllItems().then(items => {
     if (items.length) {
       itemsQte.innerText = items.length
+    }
+  })
+  
+  fetchAllItemsSlides().then(items => {
+    if (items.length) {
+      itemsSlidesQte.innerText = items.length
     }
   })
 }

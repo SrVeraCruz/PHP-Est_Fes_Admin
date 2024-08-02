@@ -69,6 +69,72 @@ require_once 'includes/header.php';
     </div>
 
     <div 
+      class="p-4 shadow-md bg-indigo-100 
+        rounded-md min-h-28 hover:bg-indigo-200
+        hover:shadow-lg transition duration-200 
+        ease-in-out hover:scale-105 
+      "
+    >
+      <a href="category-view.php">
+        <div>
+          <h5 class=" text-base font-medium text-dark/80">
+            Total Categories
+          </h5>
+          <span 
+            id="catsQte" 
+            class="text-dark/75 font-semibold text-2xl"
+          >
+            0
+          </span>
+        </div>
+      </a>
+    </div>
+    
+    <div 
+      class="p-4 shadow-md bg-highlight/40 
+        rounded-md min-h-28 hover:bg-highlight/75
+        hover:shadow-lg transition duration-200 
+        ease-in-out hover:scale-105 
+      "
+    >
+      <a href="item-view.php">
+        <div>
+          <h5 class=" text-base font-medium text-dark/80">
+            Total Items
+          </h5>
+          <span 
+            id="itemsQte" 
+            class="text-dark/75 font-semibold text-2xl"
+          >
+            0
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div 
+      class="p-4 shadow-md bg-dark/10 
+        rounded-md min-h-28 hover:bg-bg-dark/20
+        hover:shadow-lg transition duration-200 
+        ease-in-out hover:scale-105 
+      "
+    >
+      <a href="slide-view.php">
+        <div>
+          <h5 class=" text-base font-medium text-dark/80">
+            Total Items Slides
+          </h5>
+          <span 
+            id="itemsSlidesQte" 
+            class="text-dark/75 font-semibold text-2xl"
+          >
+            0
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div 
       class="p-4 shadow-md bg-yellow-100 
         rounded-md min-h-28 hover:bg-yellow-200
         hover:shadow-lg transition duration-200 
@@ -126,50 +192,6 @@ require_once 'includes/header.php';
           </h5>
           <span 
             id="subscriptionsQte" 
-            class="text-dark/75 font-semibold text-2xl"
-          >
-            0
-          </span>
-        </div>
-      </a>
-    </div>
-    
-    <div 
-      class="p-4 shadow-md bg-indigo-100 
-        rounded-md min-h-28 hover:bg-indigo-200
-        hover:shadow-lg transition duration-200 
-        ease-in-out hover:scale-105 
-      "
-    >
-      <a href="category-view.php">
-        <div>
-          <h5 class=" text-base font-medium text-dark/80">
-            Total Categories
-          </h5>
-          <span 
-            id="catsQte" 
-            class="text-dark/75 font-semibold text-2xl"
-          >
-            0
-          </span>
-        </div>
-      </a>
-    </div>
-    
-    <div 
-      class="p-4 shadow-md bg-highlight/40 
-        rounded-md min-h-28 hover:bg-highlight/75
-        hover:shadow-lg transition duration-200 
-        ease-in-out hover:scale-105 
-      "
-    >
-      <a href="item-view.php">
-        <div>
-          <h5 class=" text-base font-medium text-dark/80">
-            Total Items
-          </h5>
-          <span 
-            id="itemsQte" 
             class="text-dark/75 font-semibold text-2xl"
           >
             0
