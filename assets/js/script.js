@@ -1,5 +1,5 @@
 /* Global Variables */ 
-const baseUrl = 'http://localhost:8081/';
+const baseUrl = 'https://admin-est-usmba-ac-ma.up.railway.app/';
 // const baseUrl = 'http://localhost/EST_FES_SITE/admin_est-usmba.ac.ma/';
 
 const endpointLogin = `${baseUrl}api/users/login`;
