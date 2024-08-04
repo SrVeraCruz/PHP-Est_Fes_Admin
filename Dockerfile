@@ -24,6 +24,9 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
 # Instalar dependências npm (Tailwind)
 RUN npm install
 
+# Configurar ServerName para evitar o aviso
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Expor a porta 80
 EXPOSE 80
 
