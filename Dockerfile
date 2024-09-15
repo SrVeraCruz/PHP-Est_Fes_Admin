@@ -18,11 +18,11 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instalar Node.js e npm
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs
+# RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+#     && apt-get install -y nodejs
 
-# Instalar dependências npm (Tailwind)
-RUN npm install
+# # Instalar dependências npm (Tailwind)
+# RUN npm install
 
 # Configurar ServerName para evitar o aviso
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
